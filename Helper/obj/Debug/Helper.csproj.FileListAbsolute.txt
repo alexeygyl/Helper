@@ -12,3 +12,17 @@ D:\development\projects\C#\Helper\Helper\obj\Debug\Helper.ServerWindow.resources
 D:\development\projects\C#\Helper\Helper\bin\Debug\Newtonsoft.Json.dll
 D:\development\projects\C#\Helper\Helper\bin\Debug\Newtonsoft.Json.xml
 D:\development\projects\C#\Helper\Helper\obj\Debug\Helper.csproj.CopyComplete
+D:\development\Git\Helper\Helper\obj\Debug\Helper.csprojAssemblyReference.cache
+D:\development\Git\Helper\Helper\obj\Debug\Helper.ClientWindow.resources
+D:\development\Git\Helper\Helper\obj\Debug\Helper.ServerWindow.resources
+D:\development\Git\Helper\Helper\obj\Debug\Helper.StartWindow.resources
+D:\development\Git\Helper\Helper\obj\Debug\Helper.Properties.Resources.resources
+D:\development\Git\Helper\Helper\obj\Debug\Helper.csproj.GenerateResource.cache
+D:\development\Git\Helper\Helper\obj\Debug\Helper.exe
+D:\development\Git\Helper\Helper\obj\Debug\Helper.pdb
+D:\development\Git\Helper\Helper\bin\Debug\Helper.exe.config
+D:\development\Git\Helper\Helper\bin\Debug\Helper.exe
+D:\development\Git\Helper\Helper\bin\Debug\Helper.pdb
+D:\development\Git\Helper\Helper\bin\Debug\Newtonsoft.Json.dll
+D:\development\Git\Helper\Helper\bin\Debug\Newtonsoft.Json.xml
+D:\development\Git\Helper\Helper\obj\Debug\Helper.csproj.CopyComplete

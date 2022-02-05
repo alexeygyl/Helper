@@ -11,30 +11,27 @@ namespace Helper
 {
     class TCPClient
     {
-        private bool loop = true;
-        private bool authorized = false;
         private ClientWindow handler = null;
-        private Socket socket;
         private Thread mainThrd;
-        private Thread authThrd;
+        private Thread infoThrd;
+        private Coms coms = null;
 
         public TCPClient(ClientWindow handler)
         {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             mainThrd = new Thread(Listen);
             mainThrd.Start();
             this.handler = handler;
         }
 
-        private void Connect()
+        private Socket Connect()
         {
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             while (socket.Connected == false)
             {
                 try
                 {
                     socket.Connect(Config.GetServer(), 9999);
                     Console.WriteLine("Connected");
-                   
                     break;
                 }
                 catch (Exception ex)
@@ -42,105 +39,59 @@ namespace Helper
                     Console.WriteLine(ex.Message);
                 }
             }
+
+            return socket;
         }
 
         public void Disconnect()
         {
-            loop = false;
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
+            coms.Close();
         }
 
-        public void Send(string data)
-        {
-            try
-            {
-                byte[] txbuff = Encoding.Unicode.GetBytes(data);
-                socket.Send(txbuff);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-           
-        }
-
-
-        public string Receive()
-        {
-            try
-            {
-                int bytes;
-                StringBuilder builder = new StringBuilder();
-                byte[] rxbuff = new byte[256];
-                do
-                {
-                    bytes = socket.Receive(rxbuff, rxbuff.Length, 0);
-                    builder.Append(Encoding.Unicode.GetString(rxbuff, 0, bytes));
-                }
-                while (socket.Available > 0);
-
-                return builder.ToString();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return "";
-        }
 
         private void Listen()
         {
-            Connect();
-            Thread authThrd = new Thread(Authrize);
-            authThrd.Start();
+            coms = new Coms(Connect());
+            Thread infoThrd = new Thread(MemberInfo);
+            infoThrd.Start();
 
-            while (socket.Connected)
+            while (coms.Connected())
             {
-                Thread.Sleep(100);
-                string data = Receive();
-                if (data.Length <= 0)
+                dynamic request = coms.Receive();
+                switch ((Types.Action)request.action)
                 {
-                    continue;
-                }
-
-                dynamic output = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
-
-                switch ((Types.Action)output.action)
-                {
-                    case Types.Action.MembersInfo:
-                        handler.UpdateMembersInfo(output.membersInfo);
-                        authorized = true;
-                        break;
                     default:
                         break;
                 }
-
- 
-                //Console.WriteLine(data);
-                
             }
             System.Environment.Exit(-1);
         }
-        private void Authrize()
+
+        
+        private void MemberInfo()
         {
             Types.MemberInfo memberInfo = new Types.MemberInfo();
             memberInfo.name = Config.GetName();
             memberInfo.prof = Config.GetProf();
 
-            var myData = new
+            while (coms.Connected())
             {
-                action = Types.Action.Auth,
-                memberInfo = memberInfo,
-            };
+                var tx = new
+                {
+                    action = Types.Action.MemberInfo,
+                    memberInfo = memberInfo,
+                };
 
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(myData);
+                dynamic response = coms.Send(tx, 2000);
+                if (response != null)
+                {
+                    handler.UpdateMembersInfo(response);
+                    Thread.Sleep(1000);
+                }
 
-            while (authorized == false)
-            {
-                Send(json);
-                Thread.Sleep(5000);
             }
+            System.Environment.Exit(-1);
         }
+        
     }
 }

@@ -10,103 +10,57 @@ namespace Helper
 {
     class ServerMember
     {
-        private Socket handler = null;
-        private bool loop = true;
-        private bool authorized = false;
         private Types.MemberInfo memberInfo = new Types.MemberInfo();
         private ServerWindow serverWindow = null;
+        private Coms coms = null;
 
         public ServerMember(Socket handler, ServerWindow serverWindow)
         {
-            this.handler = handler;
+            coms = new Coms(handler);
             this.serverWindow = serverWindow;
-            Thread authThrd = new Thread(Authorize);
+            Thread authThrd = new Thread(RxCallback);
             authThrd.Start();
         }
 
-        private void Send(string data)
+      
+        private void RxCallback()
         {
-            try
+            while (coms.Connected() == true)
             {
-                byte[] txbuff = Encoding.Unicode.GetBytes(data);
-                handler.Send(txbuff);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        public string Receive()
-        {
-            try
-            {
-                int bytes;
-                StringBuilder builder = new StringBuilder();
-                byte[] rxbuff = new byte[256];
-                do
+                try
                 {
-                    bytes = handler.Receive(rxbuff, rxbuff.Length, 0);
-                    builder.Append(Encoding.Unicode.GetString(rxbuff, 0, bytes));
+                    dynamic request = coms.Receive();
+                    //Console.WriteLine("Request {0}", Newtonsoft.Json.JsonConvert.SerializeObject(request));
+                    switch ((Types.Action)request.buff.action)
+                    {
+                        case Types.Action.MemberInfo:
+                            memberInfo.name = request.buff.memberInfo.name;
+                            memberInfo.prof = request.buff.memberInfo.prof;
+                            memberInfo.hp = request.buff.memberInfo.hp;
+                            serverWindow.UpdateMembersList();
+                            dynamic response = MemberManager.GetMembersInfo();
+                            coms.Response((int)request.sn, response);
+                            //Console.WriteLine("Response {0}", Newtonsoft.Json.JsonConvert.SerializeObject(response));
+                            break;
+                        default:
+                            break;
+                    }
+
                 }
-                while (handler.Available > 0);
-
-                return builder.ToString();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return "";
-        }
-
-        private void Authorize()
-        {
-            while (handler.Connected)
-            {
-                string data = Receive();
-                if (data == "")
+                catch (Exception ex)
                 {
-                    continue;
+                    Console.WriteLine(ex.Message);
                 }
-                dynamic output = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
-                if (output.action == Types.Action.Auth)
-                {
-                    memberInfo.name = output.memberInfo.name;
-                    memberInfo.prof = output.memberInfo.prof;
-                    authorized = true;
-                    Thread memberInfoThrd = new Thread(UpdateMemberInfo);
-                    memberInfoThrd.Start();
-                    serverWindow.UpdateMembersList();
-                    break;
-                }
+
             }
 
-            if (handler.Connected == false)
+            if (coms.Connected() == false)
             {
+                Console.WriteLine("Remove client ");
                 MemberManager.Delete(this);
-            }
-            
-        }
-
-        private void UpdateMemberInfo()
-        {
-            while (handler.Connected)
-            {
-                var data = new
-                {
-                    action = Types.Action.MembersInfo,
-                    membersInfo = MemberManager.GetMembersInfo(),
-                };
-
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                Send(json);
-                Thread.Sleep(500);
+                serverWindow.UpdateMembersList();
             }
 
-            memberInfo.name = "";
-            serverWindow.UpdateMembersList();
-            MemberManager.Delete(this);
         }
 
         public Types.MemberInfo GetMemberInfo()

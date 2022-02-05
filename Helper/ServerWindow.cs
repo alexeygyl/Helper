@@ -35,7 +35,7 @@ namespace Helper
                 {
                     List<Types.MemberInfo> members = MemberManager.GetMembersInfo();
                     int pos = 0;
-                    Console.WriteLine(members.Count);
+                    //Console.WriteLine(members.Count);
                     foreach (dynamic member in members)
                     {
                         UpdateMemberInfo(member, pos++);

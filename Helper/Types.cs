@@ -10,8 +10,7 @@ namespace Helper
     {
         public enum Action
         {
-            Auth = 1,
-            MembersInfo,
+            MemberInfo = 1,
             Buff
         }
 
