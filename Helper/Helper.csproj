@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BotManager.cs" />
     <Compile Include="Coms.cs" />
     <Compile Include="MemberManager.cs" />
     <Compile Include="Types.cs" />

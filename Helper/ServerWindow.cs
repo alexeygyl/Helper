@@ -18,13 +18,15 @@ namespace Helper
 
         private static bool loop = true;
         private static Socket listenSocket;
-        
+        private static BotManager bot;
 
         public ServerWindow()
         {
             InitializeComponent();
             Thread serverThrd = new Thread(ServerThrd);
             serverThrd.Start();
+            bot = new BotManager(this);
+            this.Text = "Stopped";
         }
 
         public  void UpdateMembersList()
@@ -44,6 +46,25 @@ namespace Helper
                     for (; pos <= 8; pos++)
                     {
                         RemoveMemberInfo(pos);
+                    }
+
+                }));
+            }
+        }
+
+        public void UpdateStatus(bool status)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    if (status == true)
+                    {
+                        this.Text = "Started";
+                    }
+                    else 
+                    {
+                        this.Text = "Stopped";
                     }
 
                 }));
@@ -127,5 +148,6 @@ namespace Helper
 
             System.Environment.Exit(-1);
         }
+
     }
 }

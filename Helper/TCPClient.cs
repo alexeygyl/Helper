@@ -58,8 +58,13 @@ namespace Helper
             while (coms.Connected())
             {
                 dynamic request = coms.Receive();
-                switch ((Types.Action)request.action)
+                switch ((Types.Actions)request.buff.action)
                 {
+                    case Types.Actions.Buff:
+                        AsteriosManager.OpenWindow();
+                        Buff(request.buff.buffs);
+                        coms.Response((int)request.sn);
+                        break;
                     default:
                         break;
                 }
@@ -67,6 +72,20 @@ namespace Helper
             System.Environment.Exit(-1);
         }
 
+        private void Buff(dynamic buffs)
+        {
+            foreach (string buffName in buffs) 
+            {
+                Types.Action buff = Config.GetBuff(buffName);
+                if (buff.key.Length > 0)
+                {
+                    Console.WriteLine(buff.name);
+                    Console.WriteLine(buff.delay);
+                    Keyboard.PressKey(buff.key);
+                    Thread.Sleep(buff.delay);
+                }
+            }
+        }
         
         private void MemberInfo()
         {
@@ -78,7 +97,7 @@ namespace Helper
             {
                 var tx = new
                 {
-                    action = Types.Action.MemberInfo,
+                    action = Types.Actions.MemberInfo,
                     memberInfo = memberInfo,
                 };
 

@@ -1,0 +1,35 @@
+<root>
+	<config 
+		type="server" 
+		name="Нафаня" 
+		prof="BH"
+	/>
+	
+	<actions>
+		<action name="assist" key="F11"/>
+		<action name="nextAttack" key="F11"/>
+		<action name="leave" key="F11"/>
+		<action name="follow" key="F11"/>
+		<action name="pick" key="F11"/>
+		<action name="stand" key="F11"/>
+		<action name="start" key="Scroll"/>
+		<action name="stop" key="Pause"/>
+	</actions>
+	
+	<preattack>
+		<action key="F11" delay="10"/>
+	</preattack>
+	
+	<preattackfail>
+		<action key="" delay="21"/>
+	</preattackfail>
+	
+	<attack matime="30">
+		<action key="" delay="" hp="30" trigger="true"/>
+	</attack>
+	
+	<postattack>
+		<action key="" delay=""/>
+	</postattack>
+	
+</root>

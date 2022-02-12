@@ -54,7 +54,7 @@ namespace Helper
                         builder.Append(Encoding.Unicode.GetString(rxbuff, 0, bytes));
                     }
                     while (socket.Available > 0);
-
+                    //Console.WriteLine("Main {0}", builder.ToString());
                     dynamic output = Newtonsoft.Json.JsonConvert.DeserializeObject(builder.ToString());
                     if (output.dir == Dir.Request)
                     {
@@ -89,17 +89,20 @@ namespace Helper
             return rx.Dequeue();
         }
 
-        public void Response(int sn, dynamic buff)
+        public void Response(int sn, dynamic buff = null)
         {
             try
             {
-                var toSend = new
+                dynamic toSend;
+                if (buff == null)
                 {
-                    sn = sn,
-                    dir = Dir.Response,
-                    buff = buff,
-                };
-
+                    toSend = new { sn = sn, dir = Dir.Response};
+                }
+                else
+                {
+                    toSend = new { sn = sn, dir = Dir.Response, buff = buff};
+                }
+                
                 byte[] txbuff = Encoding.Unicode.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(toSend));
                 socket.Send(txbuff);
             }

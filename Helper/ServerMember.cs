@@ -31,9 +31,9 @@ namespace Helper
                 {
                     dynamic request = coms.Receive();
                     //Console.WriteLine("Request {0}", Newtonsoft.Json.JsonConvert.SerializeObject(request));
-                    switch ((Types.Action)request.buff.action)
+                    switch ((Types.Actions)request.buff.action)
                     {
-                        case Types.Action.MemberInfo:
+                        case Types.Actions.MemberInfo:
                             memberInfo.name = request.buff.memberInfo.name;
                             memberInfo.prof = request.buff.memberInfo.prof;
                             memberInfo.hp = request.buff.memberInfo.hp;
@@ -66,6 +66,17 @@ namespace Helper
         public Types.MemberInfo GetMemberInfo()
         {
             return memberInfo;
+        }
+
+        public void Buff(dynamic buffs)
+        {
+            var tx = new
+            {
+                action = Types.Actions.Buff,
+                buffs = buffs
+            };
+
+            coms.Send(tx, 20000);
         }
 
     }

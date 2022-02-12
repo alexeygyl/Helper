@@ -76,7 +76,8 @@ namespace Helper
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AsteriosManager.OpenWindow(Int32.Parse(comboBox1.SelectedItem.ToString()));
+            AsteriosManager.SetPid(Int32.Parse(comboBox1.SelectedItem.ToString()));
+            AsteriosManager.OpenWindow();
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -86,6 +87,11 @@ namespace Helper
 
         private void Open_Click(object sender, EventArgs e)
         {
+            if (AsteriosManager.HasPid() == false)
+            {
+                return;
+            }
+
             if (Config.GetType() == "client")
             {
                 ClientWindow clientWindow = new ClientWindow();

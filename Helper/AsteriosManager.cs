@@ -33,14 +33,45 @@ namespace Helper
 
         private static int opendelay = 1000;
         private static int maxdaley = 3000;
+        private static int pid = 0;
 
-        static public bool OpenWindow(int pid)
+        public static void SetPid(int pid) 
+        {
+            AsteriosManager.pid = pid;
+        }
+
+        public static bool HasPid()
+        {
+            return pid > 0;
+        }
+
+        public static bool IsOpened()
+        {
+            uint processID = 0;
+            IntPtr hWnd = GetForegroundWindow();
+            uint threadID = GetWindowThreadProcessId(hWnd, out processID);
+            Process fgProc = Process.GetProcessById(Convert.ToInt32(processID));
+
+            if (fgProc.Id == pid)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        static public bool OpenWindow()
         {
             try
             {
                 Process proc = Process.GetProcessById(pid);
                 for (int i = 0; i < maxdaley/opendelay; i++)
                 {
+                    if (IsOpened() == true)
+                    {
+                        return true;
+                    }
+
                     if (IsIconic(proc.MainWindowHandle))
                     {
                         ShowWindow(proc.MainWindowHandle, 9);
@@ -50,16 +81,6 @@ namespace Helper
                         SetForegroundWindow(proc.MainWindowHandle);
                     }
                     Thread.Sleep(opendelay);
-
-                    uint processID = 0;
-                    IntPtr hWnd = GetForegroundWindow();
-                    uint threadID = GetWindowThreadProcessId(hWnd, out processID);
-                    Process fgProc = Process.GetProcessById(Convert.ToInt32(processID));
-
-                    if (fgProc.Id == pid)
-                    {
-                        return true;
-                    }
                 }
                 return false;
             }

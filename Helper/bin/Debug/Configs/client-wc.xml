@@ -1,0 +1,23 @@
+<root>
+	<config 
+		type="client" 
+		name="Варкуша" 
+		prof="WC"
+		server="127.0.0.1"
+	/>
+
+	<actions>
+		<action name="assist" key="F11"/>
+		<action name="nextAttack" key="F11"/>
+		<action name="leave" key="F11"/>
+		<action name="follow" key="F11"/>
+		<action name="pick" key="F11"/>
+		<action name="stand" key="F11"/>
+	</actions>
+
+	<buffs>
+		<action name="all" key="F12" delay="15000"/>
+		<action name="pov" key="F11" delay="1000"/>
+	</buffs>
+	
+</root>
