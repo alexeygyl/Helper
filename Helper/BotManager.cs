@@ -131,7 +131,6 @@ namespace Helper
                     Console.WriteLine("BotThread Wait");
                     mutex.WaitOne();
                     AsteriosManager.OpenWindow();
-                    Keyboard.PressKey("F12");
                     mutex.ReleaseMutex();
                     Console.WriteLine("BotThread release");
                 }   
