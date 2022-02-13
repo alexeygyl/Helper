@@ -63,6 +63,7 @@ namespace Helper
                     case Types.Actions.Buff:
                         AsteriosManager.OpenWindow();
                         Buff(request.buff.buffs);
+                        Console.WriteLine("111111");
                         coms.Response((int)request.sn);
                         break;
                     default:
