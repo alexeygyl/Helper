@@ -66,7 +66,7 @@ namespace Helper
 
         private void BuffThread()
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             try
             {
                 List<string> list = new List<string>();
@@ -131,6 +131,7 @@ namespace Helper
                     Console.WriteLine("BotThread Wait");
                     mutex.WaitOne();
                     AsteriosManager.OpenWindow();
+                    Keyboard.PressKey("F12");
                     mutex.ReleaseMutex();
                     Console.WriteLine("BotThread release");
                 }   

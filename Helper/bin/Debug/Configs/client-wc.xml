@@ -3,7 +3,7 @@
 		type="client" 
 		name="Варкуша" 
 		prof="WC"
-		server="127.0.0.1"
+		server="192.168.1.236"
 	/>
 
 	<actions>

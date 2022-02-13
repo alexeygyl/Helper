@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Helper
@@ -11,6 +12,10 @@ namespace Helper
     {
         [DllImport("KeySender.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void KeyboardKeyPress(short key);
+
+        [DllImport("user32.dll")]
+        private static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
+
 
         public enum KeyCode : ushort
         {
@@ -193,7 +198,12 @@ namespace Helper
 
         static public void PressKey(String str)
         {
-            KeyboardKeyPress(GetKeyCodeByString(str));
+            //KeyboardKeyPress(GetKeyCodeByString(str));
+            //keybd_event(0xa2, 0x1d, 0, 0); // Press Left CTRL
+            keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0); // Press F12
+            //Thread.Sleep(10000);
+            keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0); // Release F12
+            //keybd_event(0xa2, 0x9d, 2, 0); // Release Left CTRL
         }
     }
 }
