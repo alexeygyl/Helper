@@ -66,7 +66,7 @@ namespace Helper
 
         private void BuffThread()
         {
-            Thread.Sleep(2000);
+            Thread.Sleep(200000);
             try
             {
                 List<string> list = new List<string>();
@@ -125,18 +125,22 @@ namespace Helper
         {
             try
             {
+                List<string> list = new List<string>();
+                list.Add("all");
                 while (true)
                 {
                     Thread.Sleep(300);
                     Console.WriteLine("BotThread Wait");
                     mutex.WaitOne();
                     AsteriosManager.OpenWindow();
+                    MemberManager.Buff(list);
                     mutex.ReleaseMutex();
                     Console.WriteLine("BotThread release");
                 }   
             }
             catch (Exception ex)
             {
+                mutex.ReleaseMutex();
                 Console.WriteLine(ex.Message);
                 botThrd = null;
             }  
