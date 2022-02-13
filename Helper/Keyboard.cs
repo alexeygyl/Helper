@@ -201,7 +201,7 @@ namespace Helper
             //KeyboardKeyPress(GetKeyCodeByString(str));
             //keybd_event(0xa2, 0x1d, 0, 0); // Press Left CTRL
             keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0); // Press F12
-            //Thread.Sleep(10000);
+            Thread.Sleep(10000);
             keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0); // Release F12
             //keybd_event(0xa2, 0x9d, 2, 0); // Release Left CTRL
         }

@@ -16,7 +16,7 @@
 	</actions>
 
 	<buffs>
-		<action name="all" key="F12" delay="15000"/>
+		<action name="all" key="F12" delay="2000"/>
 		<action name="pov" key="F11" delay="1000"/>
 	</buffs>
 	
