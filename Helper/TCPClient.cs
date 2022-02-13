@@ -81,7 +81,7 @@ namespace Helper
                 {
                     Console.WriteLine(buff.name);
                     Console.WriteLine(buff.delay);
-                    //Keyboard.PressKey(buff.key);
+                    Keyboard.PressKey(buff.key);
                     Thread.Sleep(buff.delay);
                 }
             }
