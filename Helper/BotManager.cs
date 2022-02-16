@@ -29,6 +29,8 @@ namespace Helper
 
             Thread buffThrd = new Thread(BuffThread);
             buffThrd.Start();
+
+            AsteriosManager.Start();
         }
 
         private void StartStopThread()
@@ -128,19 +130,28 @@ namespace Helper
                 while (true)
                 {
                     Thread.Sleep(300);
-                    Console.WriteLine("BotThread Wait");
+                    //Console.WriteLine("BotThread Wait");
                     mutex.WaitOne();
                     AsteriosManager.OpenWindow();
+
                     mutex.ReleaseMutex();
-                    Console.WriteLine("BotThread release");
+                    //Console.WriteLine("BotThread release");
                 }   
             }
             catch (Exception ex)
             {
-                mutex.ReleaseMutex();
                 Console.WriteLine(ex.Message);
                 botThrd = null;
-            }  
+            }
+
+            try
+            {
+                mutex.ReleaseMutex();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

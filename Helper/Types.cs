@@ -42,5 +42,41 @@ namespace Helper
             public int hp;
             public bool trigger;
         }
+
+        public struct Rect
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        public struct StatColor
+        {
+            public int R;
+            public int G;
+            public int B;
+
+            public void Set(int R, int G, int B)
+            {
+                this.R = R;
+                this.G = G;
+                this.B = B;
+            }
+        }
+
+        public struct Stat
+        {
+            public int total;
+            public int current;
+        }
+
+        public struct Stats
+        {
+            public Stat cp;
+            public Stat hp;
+            public Stat mp;
+            public int pet;
+        }
     }
 }

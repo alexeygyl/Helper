@@ -198,11 +198,16 @@ namespace Helper
 
         static public void PressKey(String str)
         {
-            //KeyboardKeyPress(GetKeyCodeByString(str));
-            //keybd_event(0xa2, 0x1d, 0, 0); // Press Left CTRL
             keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0); // Press F12
             keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0); // Release F12
-            //keybd_event(0xa2, 0x9d, 2, 0); // Release Left CTRL
+        }
+
+        static public void ShiftPressKey(String str)
+        {
+            keybd_event(0x10, 0x1d, 0, 0); 
+            keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0);
+            keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0); 
+            keybd_event(0x10, 0x9d, 2, 0);
         }
     }
 }
