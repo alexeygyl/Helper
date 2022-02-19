@@ -18,6 +18,17 @@ namespace Helper
             Pick,
             Leave,
             Buff,
+            GroupHeal,
+            Support
+        }
+
+        public enum State
+        {
+            Pre = 1,
+            PreFail,
+            Support,
+            Attack,
+            Post
         }
 
         public enum Profs
@@ -32,6 +43,30 @@ namespace Helper
             public string name;
             public string prof;
             public double hp;
+            public string lang;
+        }
+
+        public struct Config
+        {
+            public string type;
+            public string name;
+            public string prof;
+            public string lang;
+            public string server;
+        }
+
+        public struct Support
+        {
+            public string prof;
+        }
+
+        public struct Conditions
+        {
+            public int myhp;
+            public int pethp;
+            public int partyhp;
+            public int healwait;
+            public int maxtime;
         }
 
         public struct Action

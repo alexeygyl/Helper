@@ -82,7 +82,7 @@ namespace Helper
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Config.Load("./Configs/" + comboBox2.SelectedItem.ToString());
+            
         }
 
         private void Open_Click(object sender, EventArgs e)
@@ -92,17 +92,20 @@ namespace Helper
                 return;
             }
 
-            if (Config.GetType() == "client")
+            Config.Load("./Configs/" + comboBox2.SelectedItem.ToString());
+            Types.Config config = Config.GetConfig();
+
+            if (config.type == "client")
             {
                 ClientWindow clientWindow = new ClientWindow();
-                clientWindow.Text = Config.GetName();
+                clientWindow.Text = config.name;
                 clientWindow.Show();
                 this.Hide();
             }
-            else if (Config.GetType() == "server")
+            else if (config.type == "server")
             {
                 ServerWindow serverWindow = new ServerWindow();
-                serverWindow.Text = Config.GetName();
+                serverWindow.Text = config.name;
                 serverWindow.Show();
                 this.Hide();
             }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Helper
 {
@@ -15,6 +18,26 @@ namespace Helper
 
         [DllImport("user32.dll")]
         private static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
+
+        [DllImport("User32.dll")]
+        static extern void mouse_event(MouseFlags dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+
+        [DllImport("user32.dll")]
+        static extern int GetSystemMetrics(int nIndex);
+
+
+        static int SM_CXSCREEN = 0;
+        static int SM_CYSCREEN = 1;
+
+        enum MouseFlags
+        {
+            Move = 0x0001,
+            LeftDown = 0x0002,
+            LeftUp = 0x0004,
+            RightDown = 0x0008,
+            RightUp = 0x0010,
+            Absolute = 0x8000
+        };
 
 
         public enum KeyCode : ushort
@@ -160,8 +183,9 @@ namespace Helper
         static public short GetKeyCodeByString(String str)
         {
             short keyCode = 0;
-            switch (str)
+            switch (str.ToUpper())
             {
+                case "/": return 111;
                 case "F1": return 0x70;
                 case "F2": return 0x71;
                 case "F3": return 0x72;
@@ -175,10 +199,13 @@ namespace Helper
                 case "F11": return 0x7A;
                 case "F12": return 0x7B;
                 case "ESC": return 0x1b;
-                case "Unsert": return 45;
-                case "Delete": return 46;
-                case "Pause": return 19;
-                case "Scroll": return 145;
+                case "INSERT": return 45;
+                case "DELETE": return 46;
+                case "PAUSE": return 19;
+                case "SCROLL": return 145;
+                case "ENTER": return 13;
+                case "ESCAPE": return 27;
+                case " ": return 32;
                 case "0": return 0x30;
                 case "1": return 0x31;
                 case "2": return 0x32;
@@ -191,6 +218,64 @@ namespace Helper
                 case "9": return 0x39;
                 case "-": return 189;
                 case "=": return 187;
+                case "A": return 0x41;
+                case "B": return 0x42;
+                case "C": return 0x43;
+                case "D": return 0x44;
+                case "E": return 0x45;
+                case "F": return 70;
+                case "G": return 0x47;
+                case "H": return 0x48;
+                case "I": return 0x49;
+                case "J": return 0x4a;
+                case "K": return 0x4b;
+                case "L": return 0x4c;
+                case "M": return 0x4d;
+                case "N": return 0x4e;
+                case "O": return 0x4f;
+                case "P": return 80;
+                case "Q": return 0x51;
+                case "R": return 0x52;
+                case "S": return 0x53;
+                case "T": return 0x54;
+                case "U": return 0x55;
+                case "V": return 0x56;
+                case "W": return 0x57;
+                case "X": return 0x58;
+                case "Y": return 0x59;
+                case "Z": return 90;
+                case "Ф": return 0x41;
+                case "И": return 0x42;
+                case "С": return 0x43;
+                case "В": return 0x44;
+                case "У": return 0x45;
+                case "А": return 70;
+                case "П": return 0x47;
+                case "Р": return 0x48;
+                case "Ш": return 0x49;
+                case "О": return 0x4a;
+                case "Л": return 0x4b;
+                case "Д": return 0x4c;
+                case "Ь": return 0x4d;
+                case "Т": return 0x4e;
+                case "Щ": return 0x4f;
+                case "З": return 80;
+                case "Й": return 0x51;
+                case "К": return 0x52;
+                case "Ы": return 0x53;
+                case "Е": return 0x54;
+                case "Г": return 0x55;
+                case "М": return 0x56;
+                case "Ц": return 0x57;
+                case "Ч": return 0x58;
+                case "Н": return 0x59;
+                case "Я": return 90;
+                case "Ж": return 186;
+                case "Э": return 222;
+                case "Б": return 188;
+                case "Ю": return 190;
+                case "Х": return 219;
+                case "Ъ": return 221;
             }
 
             return keyCode;
@@ -198,8 +283,31 @@ namespace Helper
 
         static public void PressKey(String str)
         {
-            keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0); // Press F12
-            keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0); // Release F12
+            if (System.Environment.OSVersion.Version.Major < 10)
+            {
+                KeyboardKeyPress(GetKeyCodeByString(str));
+            }
+            else 
+            {
+                keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0);
+                keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0);
+            }
+        }
+
+        static public void PressKey(char c)
+        {
+
+            string str = new string(c,1);
+
+            if (System.Environment.OSVersion.Version.Major < 10)
+            {
+                KeyboardKeyPress(GetKeyCodeByString(str));
+            }
+            else
+            {
+                keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0);
+                keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0);
+            }
         }
 
         static public void ShiftPressKey(String str)
@@ -208,6 +316,73 @@ namespace Helper
             keybd_event((byte)GetKeyCodeByString(str), 0x58, 0, 0);
             keybd_event((byte)GetKeyCodeByString(str), 0xd8, 2, 0); 
             keybd_event(0x10, 0x9d, 2, 0);
+        }
+
+        static public void AcceptParty()
+        {
+            int sx = GetSystemMetrics(SM_CXSCREEN);
+            int sy = GetSystemMetrics(SM_CYSCREEN);
+
+            Rectangle window = AsteriosManager.GetWindowRect();
+
+            int x = (window.X + 470) * 65536 / sx;
+            int y = (window.Y + window.Height + 10) * 65536 / sy;
+        
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftDown, x, y, 0, 0);
+            Thread.Sleep(300);
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftUp, x, y, 0, 0);
+            Thread.Sleep(100);
+        
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftDown, x, y, 0, 0);
+            Thread.Sleep(300);
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftUp, x, y, 0, 0);
+            Thread.Sleep(100);
+        }
+
+        static public void StartType()
+        {
+            int sx = GetSystemMetrics(SM_CXSCREEN);
+            int sy = GetSystemMetrics(SM_CYSCREEN);
+
+            Rectangle window = AsteriosManager.GetWindowRect();
+
+            int x = (window.X + 250) * 65536 / sx;
+            int y = (window.Y + window.Height + 20) * 65536 / sy;
+
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftDown, x, y, 0, 0);
+            Thread.Sleep(300);
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftUp, x, y, 0, 0);
+            Thread.Sleep(100);
+
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftDown, x, y, 0, 0);
+            Thread.Sleep(300);
+            mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftUp, x, y, 0, 0);
+            Thread.Sleep(100);
+        }
+
+        static public void EndType()
+        {
+            PressKey("ENTER");
+            PressKey("ESCAPE");
+        }
+
+        static public void Type(string str, string lang)
+        {
+            AsteriosManager.SetLang(lang);
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                PressKey(str.ElementAt(i));
+            }
+            Thread.Sleep(300);
+        }
+
+        static public void Invite(Types.MemberInfo member)
+        {
+            StartType();
+            Type("INVITE ", "eng");
+            Type(member.name, member.lang);
+            EndType();
         }
     }
 }

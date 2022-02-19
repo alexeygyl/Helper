@@ -1,7 +1,8 @@
 <root>
 	<config 
-		type="server" 
-		name="Нафаня" 
+		type="server"
+		name="Нафаня"
+		lang="ru"
 		prof="BH"
 	/>
 	
@@ -14,22 +15,45 @@
 		<action name="stand" key="F11"/>
 		<action name="start" key="Scroll"/>
 		<action name="stop" key="Pause"/>
+		<action name="heal" key="F8"/>
 	</actions>
 	
+	<conditions 
+		myhp="80" 
+		partyhp="80" 
+		pethp="80"
+		healwait="15000"
+		maxtime="30000"
+	/>
+	
+	<supports>
+		<support prof="WC"/>
+	</supports>
+	
 	<preattack>
-		<action key="F11" delay="10"/>
+		<action key="F5" delay="300"/>
+		<action key="F1" delay="300"/>
+		<action key="F1" delay="300"/>
+		<action key="F1" delay="1500"/>
 	</preattack>
 	
 	<preattackfail>
-		<action key="" delay="21"/>
+		<action key="F6" delay="1000"/>
 	</preattackfail>
 	
-	<attack matime="30">
-		<action key="" delay="" hp="30" trigger="true"/>
+	<attack>
+		<action key="F1" delay="300"/>
+		<action key="F2" delay="1000" hp="30" trigger="true"/>
 	</attack>
 	
 	<postattack>
-		<action key="" delay=""/>
+		<action key="F3" delay="200"/>
+		<action key="F4" delay="200"/>
+		<action key="F4" delay="200"/>
+		<action key="F4" delay="200"/>
+		<action key="F4" delay="200"/>
+		<action key="F4" delay="200"/>
+		<action key="F3" delay="200"/>
 	</postattack>
 	
 </root>

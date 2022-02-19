@@ -10,75 +10,99 @@ namespace Helper
     class Config
     {
 
-        private static string type = "None";
-        private static string name = "None";
-        private static string prof = "None";
-        private static string server = "127.0.0.1";
-
-        private static string assist = "None";
-        private static string nextAttack = "None";
-        private static string leave = "None";
-        private static string pick = "None";
-        private static string stand = "None";
-        private static string follow = "None";
-
+        private static Types.Config config;
+        private static Types.Conditions conditions;
+        
         private static List<Types.Action> preattack = new List<Types.Action>();
         private static List<Types.Action> preattackfail = new List<Types.Action>();
         private static List<Types.Action> attack = new List<Types.Action>();
         private static List<Types.Action> postattack = new List<Types.Action>();
         private static List<Types.Action> buffs = new List<Types.Action>();
         private static List<Types.Action> actions = new List<Types.Action>();
+        private static List<Types.Support> supports = new List<Types.Support>();
 
         private static XmlDocument doc = new XmlDocument();
         static public void Load(string file)
         {
             XmlAttribute attr;
             doc.Load(file);
-
             if (doc == null)
             {
                 return;
             }
-
             XmlElement root = doc.DocumentElement;
             if (root == null)
             {
                 return;
             }
 
-
-            XmlNodeList xmlNodeList = root.GetElementsByTagName("config");
-            foreach (XmlNode xmlNode in xmlNodeList)
+            XmlNodeList configList = root.GetElementsByTagName("config");
+            foreach (XmlNode xmlNode in configList)
             {
-                type = ((XmlElement)xmlNode).GetAttribute("type");
-                name = ((XmlElement)xmlNode).GetAttribute("name");
-                prof = ((XmlElement)xmlNode).GetAttribute("prof");
-                server = ((XmlElement)xmlNode).GetAttribute("server");
+                config.type = GetString((XmlElement)xmlNode, "type", "None");
+                config.name = GetString((XmlElement)xmlNode, "name", "None");
+                config.prof = GetString((XmlElement)xmlNode, "prof", "None");
+                config.server = GetString((XmlElement)xmlNode, "server", "127.0.0.1");
+                config.lang = GetString((XmlElement)xmlNode, "lang", "eng");
                 break;
             }
 
 
-            /*
-            xmlNodeList = root.GetElementsByTagName("actions");
-            foreach (XmlNode xmlNode in xmlNodeList)
+            XmlNodeList conditionsList = root.GetElementsByTagName("conditions");
+            foreach (XmlNode xmlNode in conditionsList)
             {
-                assist = ((XmlElement)xmlNode).GetAttribute("assist");
-                nextAttack = ((XmlElement)xmlNode).GetAttribute("nextAttack");
-                leave = ((XmlElement)xmlNode).GetAttribute("leave");
-                follow = ((XmlElement)xmlNode).GetAttribute("follow");
-                pick = ((XmlElement)xmlNode).GetAttribute("pick");
-                stand = ((XmlElement)xmlNode).GetAttribute("stand");
-                start = ((XmlElement)xmlNode).GetAttribute("start");
-                stop = ((XmlElement)xmlNode).GetAttribute("stop");
+                conditions.myhp = GetInt((XmlElement)xmlNode, "myhp", 50);
+                conditions.partyhp = GetInt((XmlElement)xmlNode, "partyhp", 50);
+                conditions.pethp = GetInt((XmlElement)xmlNode, "pethp", 50);
+                conditions.healwait = GetInt((XmlElement)xmlNode, "healwait", 15000);
+                conditions.maxtime = GetInt((XmlElement)xmlNode, "maxtime", 30000);
                 break;
             }
-            */
+
             preattack = ParseActions(root, "preattack");
             preattackfail = ParseActions(root, "preattackfail");
             attack = ParseActions(root, "attack");
             postattack = ParseActions(root, "postattack");
             buffs = ParseActions(root, "buffs");
             actions = ParseActions(root, "actions");
+            supports = ParseSupport(root);
+        }
+
+        private static int GetInt(XmlElement xmlNode, string name, int valueDef) 
+        {
+            if (xmlNode.HasAttribute(name) == true)
+            {
+                try
+                {
+                    return Int32.Parse(xmlNode.GetAttribute(name));
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            return valueDef;
+        }
+
+        private static string GetString(XmlElement xmlNode, string name, string valueDef)
+        {
+            if (xmlNode.HasAttribute(name) == true)
+            {
+                return xmlNode.GetAttribute(name);
+            }
+
+            return valueDef;
+        }
+
+        private static bool GetBool(XmlElement xmlNode, string name, bool valueDef)
+        {
+            if (xmlNode.HasAttribute(name) == true)
+            {
+                return Boolean.Parse(((XmlElement)xmlNode).GetAttribute(name));
+            }
+
+            return valueDef;
         }
 
         private static List<Types.Action> ParseActions(XmlElement root, string name)
@@ -92,56 +116,13 @@ namespace Helper
                 foreach (XmlNode actionNode in xmlNodeList2)
                 {
                     Types.Action action = new Types.Action();
-                    action.delay = 100;
-                    action.name = "";
-                    action.hp = -1;
-                    action.trigger = false;
 
-                    try
-                    {
-                        action.key = ((XmlElement)actionNode).GetAttribute("key");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        continue;
-                    }
+                    action.key = GetString((XmlElement)actionNode, "key", "");
+                    action.name = GetString((XmlElement)actionNode, "name", "");
+                    action.delay = GetInt((XmlElement)actionNode, "delay", 100);
+                    action.hp = GetInt((XmlElement)actionNode, "hp", -1);
+                    action.trigger = GetBool((XmlElement)actionNode, "trigger", false);
 
-                    try
-                    {
-                        action.name = ((XmlElement)actionNode).GetAttribute("name");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
-                    try
-                    {
-                        action.delay = Int32.Parse(((XmlElement)actionNode).GetAttribute("delay"));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
-                    try
-                    {
-                        action.hp = Int32.Parse(((XmlElement)actionNode).GetAttribute("hp"));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
-                    try
-                    {
-                        action.trigger = Boolean.Parse(((XmlElement)actionNode).GetAttribute("trigger"));
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
 
                     actions.Add(action);
                 }
@@ -150,27 +131,31 @@ namespace Helper
             return actions;
         }
 
-        static public string GetType()
+        private static List<Types.Support> ParseSupport(XmlElement root)
         {
-            return type;
-        }
-        static public string GetProf()
-        {
-            return prof;
-        }
-        static public string GetName()
-        {
-            return name;
-        }
-        static public string GetServer()
-        {
-            return server;
+            List<Types.Support> supports = new List<Types.Support>();
+            XmlNodeList xmlNodeList = root.GetElementsByTagName("supports");
+            foreach (XmlNode xmlNode in xmlNodeList)
+            {
+                XmlNodeList xmlNodeList2 = ((XmlElement)xmlNode).GetElementsByTagName("support");
+                foreach (XmlNode actionNode in xmlNodeList2)
+                {
+                    Types.Support support = new Types.Support();
+                    support.prof = GetString((XmlElement)actionNode, "prof", "");
+                    supports.Add(support);
+                }
+                break;
+            }
+            return supports;
         }
 
+        static public Types.Config GetConfig()
+        {
+            return config;
+        }
 
         static public Types.Action GetAction(string name)
         {
-            Types.Action action1 = new Types.Action();
             foreach (Types.Action action in actions)
             {
                 if (name == action.name)
@@ -179,12 +164,11 @@ namespace Helper
                 }
             }
 
-            return action1;
+            return new Types.Action();
         }
 
         static public Types.Action GetBuff(string name)
         {
-            Types.Action action1 = new Types.Action();
             foreach (Types.Action action in buffs)
             {
                 if (name == action.name)
@@ -193,7 +177,37 @@ namespace Helper
                 }
             }
 
-            return action1;
+            return new Types.Action();
         }
+
+        public static Types.Conditions GetConditions()
+        {
+            return conditions;
+        }
+        public static List<Types.Action> GetPreActions()
+        {
+            return preattack;
+        }
+
+        public static List<Types.Action> GetPreFailActions()
+        {
+            return preattackfail;
+        }
+
+        public static List<Types.Action> GetAttackActions()
+        {
+            return attack;
+        }
+
+        public static List<Types.Action> GetPostActions()
+        {
+            return postattack;
+        }
+
+        public static List<Types.Support> GetSupports()
+        {
+            return supports;
+        }
+
     }
 }

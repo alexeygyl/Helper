@@ -25,12 +25,13 @@ namespace Helper
 
         private Socket Connect()
         {
+            Types.Config config = Config.GetConfig();
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             while (socket.Connected == false)
             {
                 try
                 {
-                    socket.Connect(Config.GetServer(), 9999);
+                    socket.Connect(config.server, 9999);
                     Console.WriteLine("Connected");
                     break;
                 }
@@ -61,9 +62,15 @@ namespace Helper
                 switch ((Types.Actions)request.buff.action)
                 {
                     case Types.Actions.Buff:
-                        AsteriosManager.OpenWindow();
                         Buff(request.buff.buffs);
-                        Console.WriteLine("111111");
+                        coms.Response((int)request.sn);
+                        break;
+                    case Types.Actions.GroupHeal:
+                        GroupHeal();
+                        coms.Response((int)request.sn);
+                        break;
+                    case Types.Actions.Support:
+                        Support();
                         coms.Response((int)request.sn);
                         break;
                     default:
@@ -75,24 +82,86 @@ namespace Helper
 
         private void Buff(dynamic buffs)
         {
+            if (AsteriosManager.OpenWindow() == false)
+            {
+                return;
+            }
+
             foreach (string buffName in buffs) 
             {
-                Types.Action buff = Config.GetBuff(buffName);
+                try
+                {
+                    Types.Action buff = Config.GetBuff(buffName);
+                    if (buff.key.Length > 0)
+                    {
+                        Console.WriteLine(buff.name);
+                        Console.WriteLine(buff.delay);
+                        Keyboard.PressKey(buff.key);
+                        Thread.Sleep(buff.delay);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+              
+            }
+        }
+
+        private void GroupHeal()
+        {
+            Console.WriteLine("Client GroupHeal");
+            if (AsteriosManager.OpenWindow() == false)
+            {
+                return;
+            }
+
+            try
+            {
+                Types.Action buff = Config.GetAction("groupheal");
                 if (buff.key.Length > 0)
                 {
-                    Console.WriteLine(buff.name);
-                    Console.WriteLine(buff.delay);
                     Keyboard.PressKey(buff.key);
                     Thread.Sleep(buff.delay);
                 }
             }
+            catch (Exception ex)
+            {
+
+            }
+           
         }
-        
+
+        private void Support()
+        {
+            Console.WriteLine("Client Support");
+            if (AsteriosManager.OpenWindow() == false)
+            {
+                return;
+            }
+
+            try
+            {
+                Types.Action buff = Config.GetAction("support");
+                if (buff.key.Length > 0)
+                {
+                    Keyboard.PressKey(buff.key);
+                    Thread.Sleep(buff.delay);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
         private void MemberInfo()
         {
+            Types.Config config = Config.GetConfig();
             Types.MemberInfo memberInfo = new Types.MemberInfo();
-            memberInfo.name = Config.GetName();
-            memberInfo.prof = Config.GetProf();
+            memberInfo.name = config.name;
+            memberInfo.prof = config.prof;
+            memberInfo.lang = config.lang;
 
             while (coms.Connected())
             {

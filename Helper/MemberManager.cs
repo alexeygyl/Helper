@@ -23,10 +23,12 @@ namespace Helper
         public static List<Types.MemberInfo> GetMembersInfo()
         {
             List<Types.MemberInfo> result = new List<Types.MemberInfo>();
+            Types.Config config = Config.GetConfig();
 
             Types.MemberInfo leader = new Types.MemberInfo();
-            leader.name = Config.GetName();
-            leader.prof = Config.GetProf();
+            leader.name = config.name;
+            leader.prof = config.prof;
+            leader.lang = config.lang;
             result.Add(leader);
 
             foreach (ServerMember member in members)
@@ -59,6 +61,20 @@ namespace Helper
             }
         }
 
+        public static void GroupHeal()
+        {
+            foreach (ServerMember member in members)
+            {
+                Types.MemberInfo info = member.GetMemberInfo();
+                Console.WriteLine("{0} {1}", info.name, info.prof);
+                if (info.prof == "WC" || info.prof == "PP")
+                {
+                    member.GroupHeal();
+                    break;
+                }
+            }
+        }
+
         public static void DC()
         {
             List<string> list = new List<string>() {"all"};
@@ -69,6 +85,19 @@ namespace Helper
                 {
                     Console.WriteLine("Dancing");
                     member.Buff(list);
+                }
+            }
+        }
+
+        public static void Support(string prof)
+        { 
+            foreach (ServerMember member in members)
+            {
+                Types.MemberInfo info = member.GetMemberInfo();
+                if (info.prof == prof)
+                {
+                    Console.WriteLine("Support {0}", prof);
+                    member.Support();
                 }
             }
         }

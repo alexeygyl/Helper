@@ -186,7 +186,7 @@ namespace Helper
             return new Types.Stats();
         }
 
-        public static double UpdateTargetHp(ref Bitmap bmp)
+        public static int UpdateTargetHp(ref Bitmap bmp)
         {
             Color pixel = new Color();
             int sX = -1, sY = -1;
@@ -419,11 +419,11 @@ namespace Helper
             return number;
         }
 
-        private static double GetTargetHP(ref Rectangle rectangle, ref Bitmap bmp)
+        private static int GetTargetHP(ref Rectangle rectangle, ref Bitmap bmp)
         {
             if (rectangle.Width <= 0 || rectangle.Height <= -1)
             {
-                return -1.0;
+                return -1;
             }
 
             Rectangle cpRect = new Rectangle(rectangle.X + 17, rectangle.Y + 27, rectangle.Width - 21, 1);
@@ -450,7 +450,7 @@ namespace Helper
                 }
             }
             healBmp = null;
-            return ((double)100 * (double)hp) / (double)(rectangle.Width - 21);
+            return (100 * hp) / (rectangle.Width - 21);
         }
 
         public static List<Types.Stats> UpdatePartyStats(ref Rectangle rectangle, ref Bitmap bmp)

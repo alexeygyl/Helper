@@ -31,6 +31,7 @@ namespace Helper
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern bool GetWindowRect(IntPtr hwnd, ref Types.Rect rectangle);
+        
 
         [DllImport("gdi32.dll", EntryPoint = "BitBlt")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -38,6 +39,12 @@ namespace Helper
             [In()] System.IntPtr hdc, int x, int y, int cx, int cy,
             [In()] System.IntPtr hdcSrc, int x1, int y1, uint rop);
 
+
+        [DllImport("user32.dll")]
+        private static extern bool PostMessage(IntPtr hhwnd, uint msg, IntPtr wparam, IntPtr lparam);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr LoadKeyboardLayout(string pwszKLID, uint Flags);
 
         private static Thread mainThrd = null;
         private static int opendelay = 1000;
@@ -53,7 +60,7 @@ namespace Helper
         private static List<Types.Stats> party = new List<Types.Stats>();
 
         private static Types.Stats myStats;
-        private static double targetHP;
+        private static int targetHP;
 
 
 
@@ -140,14 +147,14 @@ namespace Helper
 
 
 
-                    Console.WriteLine("myStats hp {0} pet {1}", myStats.hp.current, myStats.pet);
-                    Console.WriteLine(" targetHP {0}", targetHP);
+                   //Console.WriteLine("myStats hp {0} pet {1}", myStats.hp.current, myStats.pet);
+                   //Console.WriteLine(" targetHP {0}", targetHP);
 
-                    int pos = 1;
-                    foreach (Types.Stats member in party) 
-                    {
-                        Console.WriteLine(" Member {0}: Hp {1} Pet {2}",pos++, member.hp.current, member.pet);
-                    }
+                    //int pos = 1;
+                    //foreach (Types.Stats member in party) 
+                    //{
+                    //    Console.WriteLine(" Member {0}: Hp {1} Pet {2}",pos++, member.hp.current, member.pet);
+                    //}
 
 
                    // Thread.Sleep(1000);
@@ -205,6 +212,37 @@ namespace Helper
 
         }
 
+        public static List<Types.Stats> GetPartyStats()
+        {
+            return party;
+        }
+
+        public static Types.Stats GetMyStats()
+        {
+            return myStats;
+        }
+
+        public static int GetTargetHp()
+        {
+            return targetHP;
+        }
+
+        public static Rectangle GetWindowRect()
+        {
+            return windowRect;
+        }
+
+        public static void SetLang(string lang)
+        {
+            string id = "00000409";
+            if (lang.ToLower() == "ru")
+            {
+                id = "00000419";
+            }
+
+            PostMessage(hWnd, 0x0050, IntPtr.Zero, LoadKeyboardLayout(id, 1));
+            Thread.Sleep(400);
+        }
     }
 
 }

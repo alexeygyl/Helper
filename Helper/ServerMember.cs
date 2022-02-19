@@ -37,6 +37,7 @@ namespace Helper
                             memberInfo.name = request.buff.memberInfo.name;
                             memberInfo.prof = request.buff.memberInfo.prof;
                             memberInfo.hp = request.buff.memberInfo.hp;
+                            memberInfo.lang = request.buff.memberInfo.lang;
                             serverWindow.UpdateMembersList();
                             dynamic response = MemberManager.GetMembersInfo();
                             coms.Response((int)request.sn, response);
@@ -77,6 +78,25 @@ namespace Helper
             };
 
             coms.Send(tx, 20000);
+        }
+
+        public void GroupHeal()
+        {
+            var tx = new
+            {
+                action = Types.Actions.GroupHeal
+            };
+
+            coms.Send(tx, 4000);
+        }
+
+        public void Support()
+        {
+            var tx = new
+            {
+                action = Types.Actions.Support
+            };
+            coms.Send(tx, 10000);
         }
 
     }
