@@ -17,10 +17,12 @@ namespace Helper
         private static List<Types.Action> preattackfail = new List<Types.Action>();
         private static List<Types.Action> attack = new List<Types.Action>();
         private static List<Types.Action> postattack = new List<Types.Action>();
-        private static List<Types.Action> buffs = new List<Types.Action>();
         private static List<Types.Action> actions = new List<Types.Action>();
-        private static List<Types.Support> supports = new List<Types.Support>();
+        private static List<Types.Action> supports = new List<Types.Action>();
         private static List<Types.Action> selfs = new List<Types.Action>();
+
+        public static long[] timeouts;
+        public static List<Types.Action> buffs = new List<Types.Action>();
 
         private static XmlDocument doc = new XmlDocument();
         static public void Load(string file)
@@ -64,10 +66,10 @@ namespace Helper
             preattackfail = ParseActions(root, "preattackfail");
             attack = ParseActions(root, "attack");
             postattack = ParseActions(root, "postattack");
-            buffs = ParseActions(root, "buffs");
+            buffs = ParseActions(root, "buffs", config.name);
+            timeouts = new long[buffs.Count];
             actions = ParseActions(root, "actions");
-            selfs = ParseActions(root, "selfs");
-            supports = ParseSupport(root);
+            supports = ParseActions(root, "supports");
         }
 
         private static int GetInt(XmlElement xmlNode, string name, int valueDef) 
@@ -107,7 +109,7 @@ namespace Helper
             return valueDef;
         }
 
-        private static List<Types.Action> ParseActions(XmlElement root, string name)
+        private static List<Types.Action> ParseActions(XmlElement root, string name, string defName = "")
         {
             List<Types.Action> actions = new List<Types.Action>();
 
@@ -120,10 +122,11 @@ namespace Helper
                     Types.Action action = new Types.Action();
 
                     action.key = GetString((XmlElement)actionNode, "key", "");
-                    action.name = GetString((XmlElement)actionNode, "name", "");
+                    action.name = GetString((XmlElement)actionNode, "name", defName);
                     action.delay = GetInt((XmlElement)actionNode, "delay", 100);
                     action.hp = GetInt((XmlElement)actionNode, "hp", -1);
                     action.trigger = GetBool((XmlElement)actionNode, "trigger", false);
+                    action.period = GetInt((XmlElement)actionNode, "period", 1000000);
 
 
                     actions.Add(action);
@@ -131,24 +134,6 @@ namespace Helper
                 break;
             }
             return actions;
-        }
-
-        private static List<Types.Support> ParseSupport(XmlElement root)
-        {
-            List<Types.Support> supports = new List<Types.Support>();
-            XmlNodeList xmlNodeList = root.GetElementsByTagName("supports");
-            foreach (XmlNode xmlNode in xmlNodeList)
-            {
-                XmlNodeList xmlNodeList2 = ((XmlElement)xmlNode).GetElementsByTagName("support");
-                foreach (XmlNode actionNode in xmlNodeList2)
-                {
-                    Types.Support support = new Types.Support();
-                    support.name = GetString((XmlElement)actionNode, "name", "");
-                    supports.Add(support);
-                }
-                break;
-            }
-            return supports;
         }
 
         static public Types.Config GetConfig()
@@ -206,14 +191,46 @@ namespace Helper
             return postattack;
         }
 
-        public static List<Types.Action> GetSelfs()
-        {
-            return selfs;
-        }
-        public static List<Types.Support> GetSupports()
+        public static List<Types.Action> GetSupports()
         {
             return supports;
         }
 
+        public static List<Types.Action> GetBuffs()
+        {
+            return buffs;
+        }
+
+        public static void UpdateBuffsList(dynamic newBuffs)
+        {
+            List<Types.Action> allBufs = new List<Types.Action>();
+
+            foreach (Types.Action buff in buffs)
+            {
+                allBufs.Add(buff);
+            }
+
+            foreach (dynamic buff in newBuffs)
+            {
+                Types.Action action = new Types.Action();
+                action.delay = buff.delay;
+                action.period = buff.period;
+                action.name = buff.name;
+                action.key = buff.key;
+                action.hp = buff.hp;
+                action.trigger = buff.trigger;
+
+                allBufs.Add(action);
+            }
+            buffs = allBufs;
+
+            long[] newTimeouts = new long [buffs.Count];
+            for (int i = 0; i < timeouts.Length; i++)
+            {
+                newTimeouts[i] = timeouts[i];
+            }
+            timeouts = newTimeouts;
+        }
+  
     }
 }

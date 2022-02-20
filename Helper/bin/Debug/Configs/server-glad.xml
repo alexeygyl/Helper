@@ -28,13 +28,13 @@
 	/>
 	
 	<supports>
-		<support name="Варкуша"/>
+		<action name="Варкуша"/>
 	</supports>
 	
-	<selfs>
-		<action key="F12" delay="10"/>
-		<action key="F11" delay="15"/>
-	</selfs>
+	<buffs>
+		<action key="F12" delay="2000" period="10"/>
+		<action key="F11" delay="2000" period="15"/>
+	</buffs>
 	
 	<preattack>
 		<action key="F5" delay="300"/>

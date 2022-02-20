@@ -15,6 +15,7 @@ namespace Helper
         private Socket socket;
         private Queue rx = new Queue();
         Dictionary<long, dynamic> tx = new Dictionary<long, dynamic>();
+        Mutex mutex = new Mutex();
 
         public enum Dir
         {
@@ -62,10 +63,12 @@ namespace Helper
                     }
                     else if (output.dir == Dir.Response)
                     {
+                        mutex.WaitOne();
                         if (tx.ContainsKey((int)output.sn) == true)
                         {
                             tx[(int)output.sn] = output;
                         }
+                        mutex.ReleaseMutex();
                     }
                 }
                 catch (Exception ex)
@@ -114,6 +117,7 @@ namespace Helper
 
         public dynamic Send(dynamic buff, int timeout = 30000)
         {
+            mutex.WaitOne();
             Random rnd = new Random();
             dynamic output = null;
  
@@ -125,7 +129,7 @@ namespace Helper
             };
 
             tx.Add((int)toSend.sn, null);
-
+            mutex.ReleaseMutex();
             try
             {
                 //Console.WriteLine("Request {0}", Newtonsoft.Json.JsonConvert.SerializeObject(toSend));

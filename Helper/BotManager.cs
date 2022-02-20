@@ -31,9 +31,6 @@ namespace Helper
             Thread buffThrd = new Thread(BuffThread);
             buffThrd.Start();
 
-            Thread selfBuffThread = new Thread(SelfBuffThread);
-            selfBuffThread.Start();
-
             Thread healThrd = new Thread(HealThread);
             healThrd.Start();
 
@@ -162,69 +159,10 @@ namespace Helper
 
         private void BuffThread()
         {
-            Thread.Sleep(2000);
             try
             {
-                List<string> list = new List<string>();
-                while (true)
-                {
-                    
-                    Thread.Sleep(500);
-                    if (botThrd == null)
-                    {
-                        continue;
-                    }
-
-                    DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
-
-                    if (now.ToUnixTimeSeconds() - allBuffTime > 1140)
-                    {
-                        allBuffTime = now.ToUnixTimeSeconds();
-                        list.Add("all");
-                    }
-
-                    if (now.ToUnixTimeSeconds() - povBuffTime > 230)
-                    {
-                        povBuffTime = now.ToUnixTimeSeconds();
-                        list.Add("pov");
-                    }
-
-                    if (list.Count > 0)
-                    {
-                        Console.WriteLine("BuffThread Wait");
-                        mutex.WaitOne();
-                        MemberManager.Buff(list);
-                        list.Clear();
-                        mutex.ReleaseMutex();
-                        Console.WriteLine("BuffThread Release");
-                    }
-
-                    if (now.ToUnixTimeSeconds() - dcTime > 110)
-                    {
-                        //Console.WriteLine("DCThread Wait");
-                        mutex.WaitOne();
-                        dcTime = now.ToUnixTimeSeconds();
-                        MemberManager.DC();
-                        mutex.ReleaseMutex();
-                        //Console.WriteLine("DCThread Release");
-                    }
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        private void SelfBuffThread()
-        {
-            try
-            {
-                
-                List<Types.Action> selfs = Config.GetSelfs();
-                long[] timeouts = new long[selfs.Count];
-
+                Types.Config config = Config.GetConfig();
+                //Thread.Sleep(2000);
                 while (true)
                 {
 
@@ -235,23 +173,29 @@ namespace Helper
                     }
 
                     mutex.WaitOne();
-                    if (AsteriosManager.OpenWindow() == false)
-                    {
-                        mutex.ReleaseMutex();
-                        continue;
-                    }
-
                     DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
 
-                    for (int i = 0; i < selfs.Count; i++)
+                    for (int i = 0; i < Config.buffs.Count; i++)
                     {
-                        if (now.ToUnixTimeSeconds() - timeouts[i] > selfs.ElementAt(i).delay)
+                        if (now.ToUnixTimeSeconds() - Config.timeouts[i] > Config.buffs.ElementAt(i).period)
                         {
-                            timeouts[i] = now.ToUnixTimeSeconds();
-                            Keyboard.PressKey(selfs.ElementAt(i).key);
-                            Thread.Sleep(1000);
+                            Config.timeouts[i] = now.ToUnixTimeSeconds();
+                            if (config.name == Config.buffs.ElementAt(i).name)
+                            {
+                                if (AsteriosManager.OpenWindow() == false)
+                                {
+                                    continue;
+                                }
+
+                                Keyboard.PressKey(Config.buffs.ElementAt(i).key);
+                                Thread.Sleep(Config.buffs.ElementAt(i).delay);
+                            }
+                            else 
+                            {
+                                MemberManager.Buff(Config.buffs.ElementAt(i));
+                            }
                         }
-   
+                    
                     }
 
                     mutex.ReleaseMutex();
@@ -273,7 +217,7 @@ namespace Helper
             List<Types.Action> preattackfail = Config.GetPreFailActions();
             List<Types.Action> attack = Config.GetAttackActions();
             List<Types.Action> postattack = Config.GetPostActions();
-            List<Types.Support> supports = Config.GetSupports();
+            List<Types.Action> supports = Config.GetSupports();
 
             long start = 0;
             try
@@ -324,7 +268,7 @@ namespace Helper
 
                         case Types.State.Support:
                             Console.WriteLine("Types.State.Support");
-                            foreach (Types.Support support in supports)
+                            foreach (Types.Action support in supports)
                             {
                                 MemberManager.Support(support);
                             }

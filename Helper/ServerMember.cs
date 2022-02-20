@@ -22,7 +22,6 @@ namespace Helper
             authThrd.Start();
         }
 
-      
         private void RxCallback()
         {
             while (coms.Connected() == true)
@@ -43,6 +42,12 @@ namespace Helper
                             dynamic response = MemberManager.GetMembersInfo();
                             coms.Response((int)request.sn, response);
                             //Console.WriteLine("Response {0}", Newtonsoft.Json.JsonConvert.SerializeObject(response));
+                            break;
+
+                        case Types.Actions.UpdateBuffs:
+                            Console.WriteLine("UpdateBuffs {0}", Newtonsoft.Json.JsonConvert.SerializeObject(request));
+                            Config.UpdateBuffsList(request.buff.buffs);
+                            coms.Response((int)request.sn);
                             break;
                         default:
                             break;
@@ -70,15 +75,15 @@ namespace Helper
             return memberInfo;
         }
 
-        public void Buff(dynamic buffs)
+        public void Buff(Types.Action buff)
         {
             var tx = new
             {
                 action = Types.Actions.Buff,
-                buffs = buffs
+                buff = buff
             };
 
-            coms.Send(tx, 20000);
+            coms.Send(tx, buff.delay);
         }
 
         public void GroupHeal()

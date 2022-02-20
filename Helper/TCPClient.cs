@@ -53,8 +53,11 @@ namespace Helper
         private void Listen()
         {
             coms = new Coms(Connect());
+            UpdateBuffs();
             Thread infoThrd = new Thread(MemberInfo);
             infoThrd.Start();
+            
+
 
             while (coms.Connected())
             {
@@ -62,7 +65,7 @@ namespace Helper
                 switch ((Types.Actions)request.buff.action)
                 {
                     case Types.Actions.Buff:
-                        Buff(request.buff.buffs);
+                        Buff(request.buff.buff);
                         coms.Response((int)request.sn);
                         break;
                     case Types.Actions.GroupHeal:
@@ -89,31 +92,20 @@ namespace Helper
             System.Environment.Exit(-1);
         }
 
-        private void Buff(dynamic buffs)
+        private void Buff(dynamic buff)
         {
             if (AsteriosManager.OpenWindow() == false)
             {
                 return;
             }
 
-            foreach (string buffName in buffs) 
-            {
-                try
-                {
-                    Types.Action buff = Config.GetBuff(buffName);
-                    if (buff.key.Length > 0)
-                    {
-                        //Console.WriteLine(buff.name);
-                        //Console.WriteLine(buff.delay);
-                        Keyboard.PressKey(buff.key);
-                        Thread.Sleep(buff.delay);
-                    }
-                }
-                catch (Exception ex)
-                {
-                }
-              
-            }
+            Console.WriteLine(buff.name);
+            Console.WriteLine(buff.key);
+            Console.WriteLine(buff.delay);
+
+            Keyboard.PressKey((string)buff.key);
+            Thread.Sleep((int)buff.delay);
+
         }
 
         private void GroupHeal()
@@ -191,6 +183,17 @@ namespace Helper
             }
             System.Environment.Exit(-1);
         }
-        
+
+        private void UpdateBuffs() 
+        {
+            List<Types.Action> buffs = Config.GetBuffs();
+            var tx = new
+            {
+                action = Types.Actions.UpdateBuffs,
+                buffs = buffs
+            };
+
+            dynamic response = coms.Send(tx, 2000);
+        }
     }
 }

@@ -45,24 +45,20 @@ namespace Helper
             return result;
         }
 
-        public static void Buff(dynamic buffs)
+        public static void Buff(Types.Action buff)
         {
-            foreach (ServerMember member in members)
+            ServerMember member = GetServer(buff.name);
+            if (member != null)
             {
                 Types.MemberInfo info = member.GetMemberInfo();
-                Console.WriteLine("{0} {1}", info.name, info.prof);
-                if (info.prof == "WC" || info.prof == "PP")
+                if (info.party == false)
                 {
-                    if (info.party == false)
-                    {
-                        Invite(info, member);
-                    }
-
-                    Console.WriteLine("Buffing");
-                    member.Buff(buffs);
-                    Dismiss(info);
-                    break;
+                    Invite(info, member);
                 }
+
+                Console.WriteLine("Buffing {0}", buff);
+                member.Buff(buff);
+                Dismiss(info);
             }
         }
 
@@ -86,34 +82,14 @@ namespace Helper
             }
         }
 
-        public static void DC()
-        {
-            List<string> list = new List<string>() {"all"};
-            foreach (ServerMember member in members)
-            {
-                Types.MemberInfo info = member.GetMemberInfo();
-                if (info.prof == "DB" || info.prof == "SWS")
-                {
-                    if (info.party == false)
-                    {
-                        Invite(info, member);
-                    }
-
-                    Console.WriteLine("Dancing");
-                    member.Buff(list);
-                    Dismiss(info);
-                }
-            }
-        }
-
-        public static void Support(Types.Support support)
+        public static void Support(Types.Action action)
         { 
             foreach (ServerMember member in members)
             {
                 Types.MemberInfo info = member.GetMemberInfo();
-                if (info.name == support.name)
+                if (info.name == action.name)
                 {
-                    Console.WriteLine("Support {0}", support.name);
+                    Console.WriteLine("Support {0}", action.name);
                     member.Support();
                 }
             }
@@ -125,6 +101,19 @@ namespace Helper
             {
                 Types.MemberInfo info = server.GetMemberInfo();
                 if (info.name == member.name)
+                {
+                    return server;
+                }
+            }
+            return null;
+        }
+
+        private static ServerMember GetServer(string name)
+        {
+            foreach (ServerMember server in members)
+            {
+                Types.MemberInfo info = server.GetMemberInfo();
+                if (info.name == name)
                 {
                     return server;
                 }

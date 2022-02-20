@@ -18,6 +18,7 @@ namespace Helper
             Pick,
             Leave,
             Buff,
+            UpdateBuffs,
             GroupHeal,
             Support,
             Invite
@@ -58,11 +59,6 @@ namespace Helper
             public bool party;
         }
 
-        public struct Support
-        {
-            public string name;
-        }
-
         public struct Conditions
         {
             public int myhp;
@@ -79,6 +75,7 @@ namespace Helper
             public int delay;
             public int hp;
             public bool trigger;
+            public int period;
         }
 
         public struct Rect
