@@ -16,19 +16,25 @@
 		<action name="start" key="Scroll"/>
 		<action name="stop" key="Pause"/>
 		<action name="heal" key="F8"/>
+		<action name="petheal" key="F9"/>
 	</actions>
 	
 	<conditions 
-		myhp="80" 
+		myhp="90" 
 		partyhp="80" 
-		pethp="80"
+		pethp="90"
 		healwait="15000"
 		maxtime="30000"
 	/>
 	
 	<supports>
-		<support prof="WC"/>
+		<support name="Варкуша"/>
 	</supports>
+	
+	<selfs>
+		<action key="F12" delay="10"/>
+		<action key="F11" delay="15"/>
+	</selfs>
 	
 	<preattack>
 		<action key="F5" delay="300"/>

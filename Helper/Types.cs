@@ -19,7 +19,8 @@ namespace Helper
             Leave,
             Buff,
             GroupHeal,
-            Support
+            Support,
+            Invite
         }
 
         public enum State
@@ -44,6 +45,7 @@ namespace Helper
             public string prof;
             public double hp;
             public string lang;
+            public bool party;
         }
 
         public struct Config
@@ -53,11 +55,12 @@ namespace Helper
             public string prof;
             public string lang;
             public string server;
+            public bool party;
         }
 
         public struct Support
         {
-            public string prof;
+            public string name;
         }
 
         public struct Conditions

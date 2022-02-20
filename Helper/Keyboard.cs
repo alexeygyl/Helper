@@ -320,10 +320,16 @@ namespace Helper
 
         static public void AcceptParty()
         {
+            Thread.Sleep(500);
             int sx = GetSystemMetrics(SM_CXSCREEN);
             int sy = GetSystemMetrics(SM_CYSCREEN);
 
             Rectangle window = AsteriosManager.GetWindowRect();
+            if (window.Height == 0 || window.Width == 0)
+            {
+                Console.WriteLine("Failed window {0}{1}{2}{3}", window.X, window.Y, window.Height, window.Width);
+                return;
+            }
 
             int x = (window.X + 470) * 65536 / sx;
             int y = (window.Y + window.Height + 10) * 65536 / sy;
@@ -337,6 +343,7 @@ namespace Helper
             Thread.Sleep(300);
             mouse_event(MouseFlags.Absolute | MouseFlags.Move | MouseFlags.LeftUp, x, y, 0, 0);
             Thread.Sleep(100);
+            
         }
 
         static public void StartType()
@@ -380,7 +387,15 @@ namespace Helper
         static public void Invite(Types.MemberInfo member)
         {
             StartType();
-            Type("INVITE ", "eng");
+            Type("/INVITE ", "eng");
+            Type(member.name, member.lang);
+            EndType();
+        }
+
+        static public void Dismiss(Types.MemberInfo member)
+        {
+            StartType();
+            Type("/DISMISS ", "eng");
             Type(member.name, member.lang);
             EndType();
         }

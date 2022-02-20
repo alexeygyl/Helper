@@ -47,15 +47,20 @@ namespace Helper
 
         public static void Buff(dynamic buffs)
         {
-
             foreach (ServerMember member in members)
             {
                 Types.MemberInfo info = member.GetMemberInfo();
                 Console.WriteLine("{0} {1}", info.name, info.prof);
                 if (info.prof == "WC" || info.prof == "PP")
                 {
+                    if (info.party == false)
+                    {
+                        Invite(info, member);
+                    }
+
                     Console.WriteLine("Buffing");
                     member.Buff(buffs);
+                    Dismiss(info);
                     break;
                 }
             }
@@ -69,7 +74,13 @@ namespace Helper
                 Console.WriteLine("{0} {1}", info.name, info.prof);
                 if (info.prof == "WC" || info.prof == "PP")
                 {
+                    if (info.party == false)
+                    {
+                        Invite(info, member);
+                    }
+
                     member.GroupHeal();
+                    Dismiss(info);
                     break;
                 }
             }
@@ -83,23 +94,83 @@ namespace Helper
                 Types.MemberInfo info = member.GetMemberInfo();
                 if (info.prof == "DB" || info.prof == "SWS")
                 {
+                    if (info.party == false)
+                    {
+                        Invite(info, member);
+                    }
+
                     Console.WriteLine("Dancing");
                     member.Buff(list);
+                    Dismiss(info);
                 }
             }
         }
 
-        public static void Support(string prof)
+        public static void Support(Types.Support support)
         { 
             foreach (ServerMember member in members)
             {
                 Types.MemberInfo info = member.GetMemberInfo();
-                if (info.prof == prof)
+                if (info.name == support.name)
                 {
-                    Console.WriteLine("Support {0}", prof);
+                    Console.WriteLine("Support {0}", support.name);
                     member.Support();
                 }
             }
+        }
+
+        private static ServerMember GetServer(Types.MemberInfo member)
+        {
+            foreach (ServerMember server in members)
+            {
+                Types.MemberInfo info = server.GetMemberInfo();
+                if (info.name == member.name)
+                {
+                    return server;
+                }
+            }
+            return null;
+        }
+
+        public static void Invite(Types.MemberInfo memberInfo, ServerMember member = null)
+        {
+            Console.WriteLine("Invite start");
+
+            if (member == null)
+            {
+                member = GetServer(memberInfo);
+            }
+
+            if (member == null)
+            {
+                return;
+            }
+
+            if (AsteriosManager.OpenWindow() == false)
+            {
+                return;
+            }
+
+            Keyboard.Invite(memberInfo);
+            member.Invite();
+            Console.WriteLine("Invite stop");
+        }
+
+        public static void Dismiss(Types.MemberInfo memberInfo)
+        {
+            Console.WriteLine("Dismiss start");
+            if (memberInfo.party == true)
+            {
+                return;
+            }
+
+            if (AsteriosManager.OpenWindow() == false)
+            {
+                return;
+            }
+
+            Keyboard.Dismiss(memberInfo);
+            Console.WriteLine("Dismiss stop");
         }
     }
 }

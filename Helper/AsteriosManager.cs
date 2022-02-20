@@ -123,42 +123,41 @@ namespace Helper
             return false;
         }
 
-
         private static void MainThrd()
         {
             try
             {
+                Types.Config config = Config.GetConfig();
                 while (true)
                 {
                     if (AsteriosManager.IsOpened() == false)
                     {
-                        Thread.Sleep(300);
+                        Thread.Sleep(200);
                         continue;
                     }
 
                     UpdateMainRect();
-                    UpdateBitmaps();
 
-                    myStats = Analyzer.UpdateMyStats(ref topBitmap);
-                    myStats.pet = Analyzer.UpdatePetHp(ref leftBitmap);
-                    targetHP = Analyzer.UpdateTargetHp(ref topBitmap);
-                    buffs = Analyzer.UpdateBuffs(ref topBitmap);;
-                    party = Analyzer.UpdatePartyInfo(ref leftBitmap);
+                    if (config.type == "server")
+                    {
+                        UpdateBitmaps();
+                        myStats = Analyzer.UpdateMyStats(ref topBitmap);
+                        myStats.pet = Analyzer.UpdatePetHp(ref leftBitmap);
+                        targetHP = Analyzer.UpdateTargetHp(ref topBitmap);
+                        buffs = Analyzer.UpdateBuffs(ref topBitmap); ;
+                        party = Analyzer.UpdatePartyInfo(ref leftBitmap);
+                        //Console.WriteLine("myStats hp {0} pet {1}", myStats.hp.current, myStats.pet);
+                        //Console.WriteLine(" targetHP {0}", targetHP);
+
+                        //int pos = 1;
+                        //foreach (Types.Stats member in party) 
+                        //{
+                        //    Console.WriteLine(" Member {0}: Hp {1} Pet {2}",pos++, member.hp.current, member.pet);
+                        //}
 
 
-
-                   //Console.WriteLine("myStats hp {0} pet {1}", myStats.hp.current, myStats.pet);
-                   //Console.WriteLine(" targetHP {0}", targetHP);
-
-                    //int pos = 1;
-                    //foreach (Types.Stats member in party) 
-                    //{
-                    //    Console.WriteLine(" Member {0}: Hp {1} Pet {2}",pos++, member.hp.current, member.pet);
-                    //}
-
-
-                   // Thread.Sleep(1000);
-
+                        // Thread.Sleep(1000);
+                    }
                 }
             }
             catch (Exception ex)

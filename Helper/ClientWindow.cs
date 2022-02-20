@@ -24,6 +24,7 @@ namespace Helper
             {
                 RemoveMemberInfo(pos);
             }
+            AsteriosManager.Start();
         }
 
         private void Client_Load(object sender, EventArgs e)

@@ -20,6 +20,7 @@ namespace Helper
         private static List<Types.Action> buffs = new List<Types.Action>();
         private static List<Types.Action> actions = new List<Types.Action>();
         private static List<Types.Support> supports = new List<Types.Support>();
+        private static List<Types.Action> selfs = new List<Types.Action>();
 
         private static XmlDocument doc = new XmlDocument();
         static public void Load(string file)
@@ -44,9 +45,9 @@ namespace Helper
                 config.prof = GetString((XmlElement)xmlNode, "prof", "None");
                 config.server = GetString((XmlElement)xmlNode, "server", "127.0.0.1");
                 config.lang = GetString((XmlElement)xmlNode, "lang", "eng");
+                config.party = GetBool((XmlElement)xmlNode, "party", true);
                 break;
             }
-
 
             XmlNodeList conditionsList = root.GetElementsByTagName("conditions");
             foreach (XmlNode xmlNode in conditionsList)
@@ -65,6 +66,7 @@ namespace Helper
             postattack = ParseActions(root, "postattack");
             buffs = ParseActions(root, "buffs");
             actions = ParseActions(root, "actions");
+            selfs = ParseActions(root, "selfs");
             supports = ParseSupport(root);
         }
 
@@ -141,7 +143,7 @@ namespace Helper
                 foreach (XmlNode actionNode in xmlNodeList2)
                 {
                     Types.Support support = new Types.Support();
-                    support.prof = GetString((XmlElement)actionNode, "prof", "");
+                    support.name = GetString((XmlElement)actionNode, "name", "");
                     supports.Add(support);
                 }
                 break;
@@ -204,6 +206,10 @@ namespace Helper
             return postattack;
         }
 
+        public static List<Types.Action> GetSelfs()
+        {
+            return selfs;
+        }
         public static List<Types.Support> GetSupports()
         {
             return supports;

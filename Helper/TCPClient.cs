@@ -73,6 +73,15 @@ namespace Helper
                         Support();
                         coms.Response((int)request.sn);
                         break;
+                    case Types.Actions.Invite:
+                        Console.WriteLine("Client Accept invite");
+                        if (AsteriosManager.OpenWindow() == false)
+                        {
+                            return;
+                        }
+                        Keyboard.AcceptParty();
+                        coms.Response((int)request.sn);
+                        break;
                     default:
                         break;
                 }
@@ -94,8 +103,8 @@ namespace Helper
                     Types.Action buff = Config.GetBuff(buffName);
                     if (buff.key.Length > 0)
                     {
-                        Console.WriteLine(buff.name);
-                        Console.WriteLine(buff.delay);
+                        //Console.WriteLine(buff.name);
+                        //Console.WriteLine(buff.delay);
                         Keyboard.PressKey(buff.key);
                         Thread.Sleep(buff.delay);
                     }
@@ -162,6 +171,7 @@ namespace Helper
             memberInfo.name = config.name;
             memberInfo.prof = config.prof;
             memberInfo.lang = config.lang;
+            memberInfo.party = config.party;
 
             while (coms.Connected())
             {

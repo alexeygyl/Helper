@@ -38,6 +38,7 @@ namespace Helper
                             memberInfo.prof = request.buff.memberInfo.prof;
                             memberInfo.hp = request.buff.memberInfo.hp;
                             memberInfo.lang = request.buff.memberInfo.lang;
+                            memberInfo.party = request.buff.memberInfo.party;
                             serverWindow.UpdateMembersList();
                             dynamic response = MemberManager.GetMembersInfo();
                             coms.Response((int)request.sn, response);
@@ -96,8 +97,16 @@ namespace Helper
             {
                 action = Types.Actions.Support
             };
-            coms.Send(tx, 10000);
+            coms.Send(tx, 5000);
         }
 
+        public void Invite()
+        {
+            var tx = new
+            {
+                action = Types.Actions.Invite
+            };
+            coms.Send(tx, 5000);
+        }
     }
 }

@@ -31,6 +31,9 @@ namespace Helper
             Thread buffThrd = new Thread(BuffThread);
             buffThrd.Start();
 
+            Thread selfBuffThread = new Thread(SelfBuffThread);
+            selfBuffThread.Start();
+
             Thread healThrd = new Thread(HealThread);
             healThrd.Start();
 
@@ -76,7 +79,8 @@ namespace Helper
             bool toHeal = false;
 
             Types.Conditions conditions = Config.GetConditions();
-            //Console.WriteLine(conditions.healwait);
+            Types.Action heal = Config.GetAction("heal");
+            Types.Action petheal = Config.GetAction("petheal");
 
             int healwait = 0;
 
@@ -98,13 +102,25 @@ namespace Helper
                         Types.Stats myStats = AsteriosManager.GetMyStats();
                         if (myStats.hp.total != 0 && (myStats.hp.current * 100 / myStats.hp.total) < conditions.myhp)
                         {
-                            toHeal = true;
-                            break;
+                            if (AsteriosManager.IsOpened() == true)
+                            {
+                                Keyboard.PressKey(heal.key);
+                            }
+                            toHeal = true;    
                         }
 
                         if (conditions.pethp > 0 && myStats.pet > 0 && myStats.pet < conditions.pethp)
                         {
+                            if (AsteriosManager.IsOpened() == true)
+                            {
+                                Keyboard.PressKey(petheal.key);
+                            }
                             toHeal = true;
+                            break;
+                        }
+
+                        if (toHeal == true)
+                        {
                             break;
                         }
 
@@ -143,7 +159,6 @@ namespace Helper
                 Console.WriteLine(ex.Message);
             }
         }
-
 
         private void BuffThread()
         {
@@ -186,12 +201,12 @@ namespace Helper
 
                     if (now.ToUnixTimeSeconds() - dcTime > 110)
                     {
-                        Console.WriteLine("DCThread Wait");
+                        //Console.WriteLine("DCThread Wait");
                         mutex.WaitOne();
                         dcTime = now.ToUnixTimeSeconds();
                         MemberManager.DC();
                         mutex.ReleaseMutex();
-                        Console.WriteLine("DCThread Release");
+                        //Console.WriteLine("DCThread Release");
                     }
                     
                 }
@@ -202,8 +217,55 @@ namespace Helper
             }
         }
 
+        private void SelfBuffThread()
+        {
+            try
+            {
+                
+                List<Types.Action> selfs = Config.GetSelfs();
+                long[] timeouts = new long[selfs.Count];
+
+                while (true)
+                {
+
+                    Thread.Sleep(500);
+                    if (botThrd == null)
+                    {
+                        continue;
+                    }
+
+                    mutex.WaitOne();
+                    if (AsteriosManager.OpenWindow() == false)
+                    {
+                        mutex.ReleaseMutex();
+                        continue;
+                    }
+
+                    DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
+
+                    for (int i = 0; i < selfs.Count; i++)
+                    {
+                        if (now.ToUnixTimeSeconds() - timeouts[i] > selfs.ElementAt(i).delay)
+                        {
+                            timeouts[i] = now.ToUnixTimeSeconds();
+                            Keyboard.PressKey(selfs.ElementAt(i).key);
+                            Thread.Sleep(1000);
+                        }
+   
+                    }
+
+                    mutex.ReleaseMutex();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         private void BotThread()
         {
+            CreateGroup();
             Types.State state = Types.State.Pre;
             Types.Conditions conditions = Config.GetConditions();
 
@@ -214,7 +276,6 @@ namespace Helper
             List<Types.Support> supports = Config.GetSupports();
 
             long start = 0;
-
             try
             {
                 while (true)
@@ -265,7 +326,7 @@ namespace Helper
                             Console.WriteLine("Types.State.Support");
                             foreach (Types.Support support in supports)
                             {
-                                MemberManager.Support(support.prof);
+                                MemberManager.Support(support);
                             }
                             state = Types.State.Attack;
                             break;
@@ -327,5 +388,20 @@ namespace Helper
                 Console.WriteLine(ex.Message);
             }
         }
+
+        private void CreateGroup() 
+        {
+            mutex.WaitOne();
+            foreach (Types.MemberInfo memberInfo in MemberManager.GetMembersInfo())
+            {
+                if (memberInfo.party == true)
+                {
+                    MemberManager.Invite(memberInfo);
+                }
+                
+            }
+            mutex.ReleaseMutex();
+        }
+
     }
 }
