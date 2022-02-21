@@ -26,11 +26,7 @@
 		healwait="15000"
 		maxtime="30000"
 	/>
-	
-	<supports>
-		<action name="Варкуша"/>
-	</supports>
-	
+
 	<buffs>
 		<action key="F12" delay="2000" period="10"/>
 		<action key="F11" delay="2000" period="15"/>

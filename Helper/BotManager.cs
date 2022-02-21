@@ -212,12 +212,10 @@ namespace Helper
             CreateGroup();
             Types.State state = Types.State.Pre;
             Types.Conditions conditions = Config.GetConditions();
-
             List<Types.Action> preattack = Config.GetPreActions();
             List<Types.Action> preattackfail = Config.GetPreFailActions();
             List<Types.Action> attack = Config.GetAttackActions();
             List<Types.Action> postattack = Config.GetPostActions();
-            List<Types.Action> supports = Config.GetSupports();
 
             long start = 0;
             try
@@ -236,77 +234,92 @@ namespace Helper
                     switch (state)
                     {
                         case Types.State.Pre:
-                            Console.WriteLine("Types.State.Pre");
+                            {
+                                Console.WriteLine("Types.State.Pre");
 
-                            foreach (Types.Action action in preattack)
-                            {
-                                Keyboard.PressKey(action.key);
-                                Thread.Sleep(action.delay);
-                                //Console.WriteLine("{0} {1}", action.key, action.delay);
-                            }
+                                foreach (Types.Action action in preattack)
+                                {
+                                    Keyboard.PressKey(action.key);
+                                    Thread.Sleep(action.delay);
+                                    //Console.WriteLine("{0} {1}", action.key, action.delay);
+                                }
 
-                            if (AsteriosManager.GetTargetHp() > 0)
-                            {
-                                start = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
-                                state = Types.State.Support;
+                                if (AsteriosManager.GetTargetHp() > 0)
+                                {
+                                    start = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeMilliseconds();
+                                    state = Types.State.Support;
+                                }
+                                else
+                                {
+                                    state = Types.State.PreFail;
+                                }
+                                break;
                             }
-                            else 
-                            {
-                                state = Types.State.PreFail;
-                            }
-                            break;
 
                         case Types.State.PreFail:
-                            Console.WriteLine("Types.State.PreFail");
-                            foreach (Types.Action action in preattackfail)
                             {
-                                Keyboard.PressKey(action.key);
-                                Thread.Sleep(action.delay);
-                            }
-                            state = Types.State.Pre;
-                            break;
-
-                        case Types.State.Support:
-                            Console.WriteLine("Types.State.Support");
-                            foreach (Types.Action support in supports)
-                            {
-                                MemberManager.Support(support);
-                            }
-                            state = Types.State.Attack;
-                            break;
-
-                        case Types.State.Attack:
-                           
-                            foreach (Types.Action action in attack)
-                            {
-                                Keyboard.PressKey(action.key);
-                                Thread.Sleep(action.delay);
-                            }
-                            
-                            DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
-                            //Console.WriteLine("Types.State.Attack {0} {1}", start, now.ToUnixTimeMilliseconds());
-                            if (now.ToUnixTimeMilliseconds() - start > conditions.maxtime)
-                            {
-                                //Console.WriteLine("MAX time");
+                                Console.WriteLine("Types.State.PreFail");
+                                foreach (Types.Action action in preattackfail)
+                                {
+                                    Keyboard.PressKey(action.key);
+                                    Thread.Sleep(action.delay);
+                                }
                                 state = Types.State.Pre;
                                 break;
                             }
 
-                            if (AsteriosManager.GetTargetHp() <= 0)
+                        case Types.State.Support:
                             {
-                                state = Types.State.Post;
+                                Console.WriteLine("Types.State.Support");
+                                foreach (var support in Config.supports)
+                                {
+                                    if (support.Value == true)
+                                    {
+                                        MemberManager.Support(support.Key);
+                                    }
+                                    
+                                }
+                                state = Types.State.Attack;
+                                break;
                             }
-  
-                            break;
+                         
+                        case Types.State.Attack:
+                            {
+                                foreach (Types.Action action in attack)
+                                {
+                                    Keyboard.PressKey(action.key);
+                                    Thread.Sleep(action.delay);
+                                }
+
+                                DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
+                                //Console.WriteLine("Types.State.Attack {0} {1}", start, now.ToUnixTimeMilliseconds());
+                                if (now.ToUnixTimeMilliseconds() - start > conditions.maxtime)
+                                {
+                                    //Console.WriteLine("MAX time");
+                                    state = Types.State.Pre;
+                                    break;
+                                }
+
+                                if (AsteriosManager.GetTargetHp() <= 0)
+                                {
+                                    state = Types.State.Post;
+                                }
+
+                                break;
+                            }
+                          
                         case Types.State.Post:
-                            Console.WriteLine("Types.State.Post");
-                            foreach (Types.Action action in postattack)
                             {
-                                Keyboard.PressKey(action.key);
-                                Thread.Sleep(action.delay);
+                                Console.WriteLine("Types.State.Post");
+                                foreach (Types.Action action in postattack)
+                                {
+                                    Keyboard.PressKey(action.key);
+                                    Thread.Sleep(action.delay);
+                                }
+                                state = Types.State.Pre;
+                                break;
                             }
-                            state = Types.State.Pre;
-                            break;
+                      
                         default:
                             state = Types.State.Pre;
                             break;

@@ -6,6 +6,7 @@
 		prof="WC"
 		server="192.168.1.236"
 		party="true"
+		support="true"
 	/>
 
 	<actions>

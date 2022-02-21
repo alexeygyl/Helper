@@ -164,6 +164,7 @@ namespace Helper
             memberInfo.prof = config.prof;
             memberInfo.lang = config.lang;
             memberInfo.party = config.party;
+            memberInfo.support = config.support;
 
             while (coms.Connected())
             {

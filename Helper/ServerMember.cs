@@ -38,7 +38,9 @@ namespace Helper
                             memberInfo.hp = request.buff.memberInfo.hp;
                             memberInfo.lang = request.buff.memberInfo.lang;
                             memberInfo.party = request.buff.memberInfo.party;
+                            memberInfo.support = request.buff.memberInfo.support;
                             serverWindow.UpdateMembersList();
+                            Config.UpdateSupport(memberInfo);
                             dynamic response = MemberManager.GetMembersInfo();
                             coms.Response((int)request.sn, response);
                             //Console.WriteLine("Response {0}", Newtonsoft.Json.JsonConvert.SerializeObject(response));

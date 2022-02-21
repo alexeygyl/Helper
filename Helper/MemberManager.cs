@@ -82,16 +82,13 @@ namespace Helper
             }
         }
 
-        public static void Support(Types.Action action)
-        { 
-            foreach (ServerMember member in members)
+        public static void Support(string name)
+        {
+            ServerMember member = MemberManager.GetServer(name);
+            if (member != null)
             {
-                Types.MemberInfo info = member.GetMemberInfo();
-                if (info.name == action.name)
-                {
-                    Console.WriteLine("Support {0}", action.name);
-                    member.Support();
-                }
+                Console.WriteLine("Support {0}", name);
+                member.Support();
             }
         }
 

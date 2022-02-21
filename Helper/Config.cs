@@ -18,9 +18,8 @@ namespace Helper
         private static List<Types.Action> attack = new List<Types.Action>();
         private static List<Types.Action> postattack = new List<Types.Action>();
         private static List<Types.Action> actions = new List<Types.Action>();
-        private static List<Types.Action> supports = new List<Types.Action>();
-        private static List<Types.Action> selfs = new List<Types.Action>();
 
+        public static Dictionary<string, bool> supports = new Dictionary<string, bool>();
         public static long[] timeouts;
         public static List<Types.Action> buffs = new List<Types.Action>();
 
@@ -48,6 +47,7 @@ namespace Helper
                 config.server = GetString((XmlElement)xmlNode, "server", "127.0.0.1");
                 config.lang = GetString((XmlElement)xmlNode, "lang", "eng");
                 config.party = GetBool((XmlElement)xmlNode, "party", true);
+                config.support = GetBool((XmlElement)xmlNode, "support", false);
                 break;
             }
 
@@ -69,7 +69,6 @@ namespace Helper
             buffs = ParseActions(root, "buffs", config.name);
             timeouts = new long[buffs.Count];
             actions = ParseActions(root, "actions");
-            supports = ParseActions(root, "supports");
         }
 
         private static int GetInt(XmlElement xmlNode, string name, int valueDef) 
@@ -191,11 +190,6 @@ namespace Helper
             return postattack;
         }
 
-        public static List<Types.Action> GetSupports()
-        {
-            return supports;
-        }
-
         public static List<Types.Action> GetBuffs()
         {
             return buffs;
@@ -231,6 +225,11 @@ namespace Helper
             }
             timeouts = newTimeouts;
         }
-  
+
+        public static void UpdateSupport(Types.MemberInfo member)
+        {
+            supports[member.name] = member.support; 
+        }
+
     }
 }

@@ -47,6 +47,7 @@ namespace Helper
             public double hp;
             public string lang;
             public bool party;
+            public bool support;
         }
 
         public struct Config
@@ -57,6 +58,7 @@ namespace Helper
             public string lang;
             public string server;
             public bool party;
+            public bool support;
         }
 
         public struct Conditions
