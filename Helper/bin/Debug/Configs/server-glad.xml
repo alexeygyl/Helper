@@ -16,20 +16,20 @@
 		<action name="start" key="Scroll"/>
 		<action name="stop" key="Pause"/>
 		<action name="heal" key="F8"/>
+		<action name="cp" key="F8"/>
 		<action name="petheal" key="F9"/>
 	</actions>
 	
 	<conditions 
-		myhp="90" 
-		partyhp="80" 
-		pethp="90"
+		myhp="60" 
+		mycp="60"
+		partyhp="60" 
+		pethp="70"
 		healwait="15000"
 		maxtime="30000"
 	/>
 
 	<buffs>
-		<action key="F12" delay="2000" period="10"/>
-		<action key="F11" delay="2000" period="15"/>
 	</buffs>
 	
 	<preattack>

@@ -42,6 +42,12 @@ namespace Helper
                             serverWindow.UpdateMembersList();
                             Config.UpdateSupport(memberInfo);
                             dynamic response = MemberManager.GetMembersInfo();
+
+                            //if (MemberManager.Running() == true)
+                            //{
+                            //    MemberManager.Invite(memberInfo);
+                            //}
+
                             coms.Response((int)request.sn, response);
                             //Console.WriteLine("Response {0}", Newtonsoft.Json.JsonConvert.SerializeObject(response));
                             break;

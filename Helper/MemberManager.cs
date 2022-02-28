@@ -9,6 +9,12 @@ namespace Helper
     class MemberManager
     {
         private static List<ServerMember> members = new List<ServerMember>();
+        private static BotManager bot;
+
+        public static void SetBotManager(BotManager botManager)
+        {
+            bot = botManager;
+        }
 
         public static void Add(ServerMember member)
         {
@@ -87,7 +93,7 @@ namespace Helper
             ServerMember member = MemberManager.GetServer(name);
             if (member != null)
             {
-                Console.WriteLine("Support {0}", name);
+                //Console.WriteLine("Support {0}", name);
                 member.Support();
             }
         }
@@ -157,6 +163,12 @@ namespace Helper
 
             Keyboard.Dismiss(memberInfo);
             Console.WriteLine("Dismiss stop");
+        }
+
+        public static bool Running()
+        {
+            return bot.Running();
+
         }
     }
 }

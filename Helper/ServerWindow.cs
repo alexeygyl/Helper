@@ -16,9 +16,9 @@ namespace Helper
     public partial class ServerWindow : Form
     {
 
-        private static bool loop = true;
-        private static Socket listenSocket;
-        private static BotManager bot;
+        private bool loop = true;
+        private Socket listenSocket;
+        private BotManager bot;
 
         public ServerWindow()
         {

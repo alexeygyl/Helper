@@ -21,7 +21,8 @@
 	</actions>
 
 	<buffs>
-		<action key="F12" delay="2000" period="12"/>
+		<action key="F11" delay="2000" period="290"/>
+		<action key="F12" delay="4000" period="1140"/>
 	</buffs>
 	
 </root>

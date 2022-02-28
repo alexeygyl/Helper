@@ -64,6 +64,7 @@ namespace Helper
         public struct Conditions
         {
             public int myhp;
+            public int mycp;
             public int pethp;
             public int partyhp;
             public int healwait;

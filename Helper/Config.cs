@@ -55,6 +55,7 @@ namespace Helper
             foreach (XmlNode xmlNode in conditionsList)
             {
                 conditions.myhp = GetInt((XmlElement)xmlNode, "myhp", 50);
+                conditions.mycp = GetInt((XmlElement)xmlNode, "mycp", 50);
                 conditions.partyhp = GetInt((XmlElement)xmlNode, "partyhp", 50);
                 conditions.pethp = GetInt((XmlElement)xmlNode, "pethp", 50);
                 conditions.healwait = GetInt((XmlElement)xmlNode, "healwait", 15000);
@@ -174,6 +175,7 @@ namespace Helper
         {
             return preattack;
         }
+
 
         public static List<Types.Action> GetPreFailActions()
         {

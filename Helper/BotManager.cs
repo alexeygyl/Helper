@@ -159,13 +159,12 @@ namespace Helper
 
         private void BuffThread()
         {
-            try
+            Types.Config config = Config.GetConfig();
+            //Thread.Sleep(2000);
+            while (true)
             {
-                Types.Config config = Config.GetConfig();
-                //Thread.Sleep(2000);
-                while (true)
+                try
                 {
-
                     Thread.Sleep(500);
                     if (botThrd == null)
                     {
@@ -200,11 +199,13 @@ namespace Helper
 
                     mutex.ReleaseMutex();
                 }
+                catch (Exception ex)
+                {
+                    mutex.ReleaseMutex();
+                    Console.WriteLine(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+          
         }
 
         private void BotThread()
@@ -270,15 +271,7 @@ namespace Helper
 
                         case Types.State.Support:
                             {
-                                Console.WriteLine("Types.State.Support");
-                                foreach (var support in Config.supports)
-                                {
-                                    if (support.Value == true)
-                                    {
-                                        MemberManager.Support(support.Key);
-                                    }
-                                    
-                                }
+                                Support();
                                 state = Types.State.Attack;
                                 break;
                             }
@@ -334,6 +327,7 @@ namespace Helper
             {
                 Console.WriteLine(ex.Message);
                 botThrd = null;
+                return;
             }
 
             try
@@ -346,19 +340,58 @@ namespace Helper
             }
         }
 
-        private void CreateGroup() 
+
+        private void Support()
         {
-            mutex.WaitOne();
-            foreach (Types.MemberInfo memberInfo in MemberManager.GetMembersInfo())
+            try
             {
-                if (memberInfo.party == true)
+                Console.WriteLine("Types.State.Support");
+                foreach (var support in Config.supports)
                 {
-                    MemberManager.Invite(memberInfo);
+                    if (support.Value == true)
+                    {
+                        Console.WriteLine("Support {0}", support.Key);
+                        MemberManager.Support(support.Key);
+                    }
                 }
-                
+                Console.WriteLine("Types.State.Support dOne");
             }
-            mutex.ReleaseMutex();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
+        private void CreateGroup() 
+        {
+            try
+            {
+                mutex.WaitOne();
+                foreach (Types.MemberInfo memberInfo in MemberManager.GetMembersInfo())
+                {
+                    if (memberInfo.party == true)
+                    {
+                        MemberManager.Invite(memberInfo);
+                    }
+
+                }
+                mutex.ReleaseMutex();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
+        }
+
+        public bool Running() 
+        {
+            if (botThrd == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

@@ -21,6 +21,10 @@
 	</actions>
 
 	<buffs>
+		<action key="7" delay="1500" period="110"/>
+		<action key="8" delay="1500" period="110"/>
+		<action key="9" delay="1500" period="110"/>
+		<action key="0" delay="1500" period="110"/>
 	</buffs>
 	
 </root>
