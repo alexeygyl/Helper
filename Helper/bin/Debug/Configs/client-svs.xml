@@ -1,0 +1,30 @@
+<root>
+	<config 
+		type="client" 
+		name="СвСушка"
+		lang="ru" 
+		prof="SVS"
+		server="192.168.1.253"
+		party="true"
+		support="true"
+	/>
+
+	<actions>
+		<action name="assist" key=""/>
+		<action name="nextAttack" key=""/>
+		<action name="leave" key=""/>
+		<action name="follow" key=""/>
+		<action name="pick" key=""/>
+		<action name="stand" key=""/>
+		<action name="groupheal" key="" delay="3000"/>
+		<action name="support" key="F1" delay="1000"/>
+	</actions>
+
+	<buffs>
+		<action key="8" delay="1800" period="110"/>
+		<action key="9" delay="1800" period="110"/>
+		<action key="0" delay="1800" period="110"/>
+		<action key="7" delay="1800" period="110"/>
+	</buffs>
+	
+</root>

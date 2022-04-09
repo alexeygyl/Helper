@@ -125,16 +125,18 @@ namespace Helper
 
         private static void MainThrd()
         {
-            try
+         
+            Types.Config config = Config.GetConfig();
+            while (true)
             {
-                Types.Config config = Config.GetConfig();
-                while (true)
+                try
                 {
                     if (AsteriosManager.IsOpened() == false)
                     {
                         Thread.Sleep(200);
                         continue;
                     }
+
 
                     UpdateMainRect();
 
@@ -159,11 +161,12 @@ namespace Helper
                         // Thread.Sleep(1000);
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+
         }
 
         private static void UpdateMainRect()

@@ -30,13 +30,8 @@
 	/>
 
 	<buffs>
-		<action key="7" delay="1000" period="1800"/>
-		<action key="8" delay="1000" period="900"/>
-		<action key="F8" delay="1500" period="155"/>
-		<action key="F9" delay="1000" period="300"/>
-		<action key="F10" delay="1500" period="150"/>
-		<action key="F11" delay="1000" period="60"/>
-		<action key="F12" delay="1000" period="60"/>
+		<action key="F12" delay="7000" period="900"/>
+		<action key="F11" delay="1000" period="1200"/>
 	</buffs>
 	
 	<preattack>
@@ -52,6 +47,7 @@
 	
 	<attack>
 		<action key="F1" delay="300"/>
+		<action key="F2" delay="300"/>
 	</attack>
 	
 	<postattack>

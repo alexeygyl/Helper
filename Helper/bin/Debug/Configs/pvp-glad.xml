@@ -1,0 +1,51 @@
+<root>
+	<config 
+		type="server"
+		name="Нафаня"
+		lang="ru"
+		prof="Глад"
+	/>
+	
+	<actions>
+		<action name="start" key="Scroll"/>
+		<action name="stop" key="Pause"/>
+		<action name="assist" key=""/>
+		<action name="nextAttack" key=""/>
+		<action name="leave" key=""/>
+		<action name="follow" key=""/>
+		<action name="pick" key=""/>
+		<action name="stand" key=""/>
+		<action name="heal" key="0"/>
+		<action name="cp" key="8"/>
+		<action name="petheal" key="9"/>
+	</actions>
+	
+	<conditions 
+		myhp="60" 
+		mycp="80"
+		partyhp="60" 
+		pethp="70"
+		healwait="15000"
+		maxtime="40000"
+	/>
+
+	<buffs>
+	</buffs>
+	
+	<preattack>
+
+	</preattack>
+	
+	<preattackfail>
+
+	</preattackfail>
+	
+	<attack>
+
+	</attack>
+	
+	<postattack>
+
+	</postattack>
+	
+</root>

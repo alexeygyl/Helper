@@ -3,7 +3,7 @@
 		type="server"
 		name="Нафаня"
 		lang="ru"
-		prof="Глад"
+		prof="DB"
 	/>
 	
 	<actions>
@@ -23,20 +23,14 @@
 	<conditions 
 		myhp="60" 
 		mycp="60"
-		partyhp="60" 
+		partyhp="1" 
 		pethp="70"
 		healwait="15000"
 		maxtime="40000"
 	/>
 
 	<buffs>
-		<action key="7" delay="1000" period="1800"/>
-		<action key="8" delay="1000" period="900"/>
-		<action key="F8" delay="1500" period="155"/>
-		<action key="F9" delay="1000" period="300"/>
-		<action key="F10" delay="1500" period="150"/>
-		<action key="F11" delay="1000" period="60"/>
-		<action key="F12" delay="1000" period="60"/>
+		<action key="F12" delay="1800" period="110"/>
 	</buffs>
 	
 	<preattack>
@@ -44,6 +38,7 @@
 		<action key="F1" delay="300"/>
 		<action key="F1" delay="300"/>
 		<action key="F1" delay="1000"/>
+		<action key="F2" delay="1000"/>
 	</preattack>
 	
 	<preattackfail>

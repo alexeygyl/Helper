@@ -4,9 +4,9 @@
 		name="Варкуша"
 		lang="ru" 
 		prof="WC"
-		server="192.168.1.236"
+		server="192.168.1.253"
 		party="true"
-		support="true"
+		support="false"
 	/>
 
 	<actions>
@@ -22,7 +22,7 @@
 
 	<buffs>
 		<action key="F11" delay="2000" period="290"/>
-		<action key="F12" delay="4000" period="1140"/>
+		<action key="F12" delay="15000" period="1140"/>
 	</buffs>
 	
 </root>

@@ -376,9 +376,10 @@ namespace Helper
         static public void Type(string str, string lang)
         {
             AsteriosManager.SetLang(lang);
-
+            Thread.Sleep(300);
             for (int i = 0; i < str.Length; i++)
             {
+                Thread.Sleep(150);
                 PressKey(str.ElementAt(i));
             }
             Thread.Sleep(300);

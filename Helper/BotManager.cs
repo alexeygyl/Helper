@@ -99,6 +99,7 @@ namespace Helper
                         Types.Stats myStats = AsteriosManager.GetMyStats();
                         if (myStats.hp.total != 0 && (myStats.hp.current * 100 / myStats.hp.total) < conditions.myhp)
                         {
+                            Console.WriteLine("myStats: {0} {1}", myStats.hp.current, conditions.myhp);
                             if (AsteriosManager.IsOpened() == true)
                             {
                                 Keyboard.PressKey(heal.key);
@@ -108,6 +109,7 @@ namespace Helper
 
                         if (conditions.pethp > 0 && myStats.pet > 0 && myStats.pet < conditions.pethp)
                         {
+                            Console.WriteLine("Pet: {0} {1}", myStats.pet, conditions.pethp);
                             if (AsteriosManager.IsOpened() == true)
                             {
                                 Keyboard.PressKey(petheal.key);
@@ -126,12 +128,14 @@ namespace Helper
                         {
                             if (conditions.partyhp > 0 && member.hp.current > 0 && member.hp.current < conditions.partyhp)
                             {
+                                Console.WriteLine("Member: {0} {1}", member.hp.current, conditions.partyhp);
                                 toHeal = true;
                                 break;
                             }
 
-                            if (conditions.pethp > 0 && myStats.pet > 0 && member.pet < conditions.pethp)
+                            if (conditions.pethp > 0 && member.pet > 0 && member.pet < conditions.pethp)
                             {
+                                Console.WriteLine("Member Pet: {0} {1}", member.pet, conditions.pethp);
                                 toHeal = true;
                                 break;
                             }
@@ -142,6 +146,7 @@ namespace Helper
 
                     if (toHeal == true)
                     {
+                        toHeal = false;
                         mutex.WaitOne();
                         Console.WriteLine("Server GroupHeal");
                         MemberManager.GroupHeal();
@@ -210,7 +215,7 @@ namespace Helper
 
         private void BotThread()
         {
-            CreateGroup();
+            //CreateGroup();
             Types.State state = Types.State.Pre;
             Types.Conditions conditions = Config.GetConditions();
             List<Types.Action> preattack = Config.GetPreActions();
@@ -278,17 +283,18 @@ namespace Helper
                          
                         case Types.State.Attack:
                             {
+                                DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
+                                //Console.WriteLine("Types.State.Attack {0} {1}", start, now.ToUnixTimeMilliseconds());
+
                                 foreach (Types.Action action in attack)
                                 {
                                     Keyboard.PressKey(action.key);
                                     Thread.Sleep(action.delay);
                                 }
 
-                                DateTimeOffset now = (DateTimeOffset)DateTime.UtcNow;
-                                //Console.WriteLine("Types.State.Attack {0} {1}", start, now.ToUnixTimeMilliseconds());
                                 if (now.ToUnixTimeMilliseconds() - start > conditions.maxtime)
                                 {
-                                    //Console.WriteLine("MAX time");
+                                    Console.WriteLine("MAX time");
                                     state = Types.State.Pre;
                                     break;
                                 }
